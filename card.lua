@@ -6,6 +6,8 @@ class('Card').extends(gfx.sprite)
 function Card:init(xId, yId, xPos, yPos)
   self.xId = xId
   self.yId = yId
+  -- keep track of which side is showing and which side was showing last frame
+  -- so that we only need to update() if a change occurs
   self.side = 'back'
   self.lastSide = 'back'
 
@@ -25,12 +27,12 @@ function Card:update()
       local image = gfx.image.new("images/card-react")
       self:setImage(image)
     end
+
     self.lastShow = self.side
   end
 end
 
-function Card:show()
-  print('show', self.xId, self.yId)
+function Card:flip()
   if self.side == 'back' then
     self.side = 'front'
   else

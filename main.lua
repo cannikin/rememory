@@ -65,7 +65,7 @@ end
 function handleA()
   if pd.buttonJustPressed(pd.kButtonA) then
     local selected = selector:which()
-    cards[selected.col][selected.row]:show()
+    cards[selected.col][selected.row]:flip()
     foundMap["Storybook"] = true
   end
 end
