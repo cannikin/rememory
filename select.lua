@@ -112,6 +112,7 @@ function Select:shake(dir)
 end
 
 function Select:moveSelection()
+  -- TODO: use timer to animate selection box moving
   local newX = self.colWidth * (self.selected.col - 1)
   local newXGap = self.gap * self.selected.col - (self.width - self.colWidth) / 2
   local newY = self.rowHeight * (self.selected.row - 1)
