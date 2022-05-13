@@ -1,3 +1,5 @@
+import "CoreLibs/crank"
+import "CoreLibs/easing"
 import "CoreLibs/object"
 import "CoreLibs/graphics"
 import "CoreLibs/sprites"
@@ -12,6 +14,16 @@ local gfx <const> = pd.graphics
 
 -- size of the board
 local board = { cols = 6, rows = 4, gap = 8}
+-- which matches we're looking for
+local labels = { "React", "GraphQL", "Prisma", "TypeScript", "Jest", "Storybook", "Webpack", "Babel", "Auth0", "Netlify", "Vercel", "Render" }
+-- keep track of which pairs have been found and if any changed since the last update()
+local foundMap = {}
+local previousFound = {}
+for i=1,#labels do
+  foundMap[labels[i]] = false
+  previousFound[labels[i]] = false
+end
+
 -- 2 dimensional array of cards on the board
 local cards = {}
 -- sprite which shows a highlighted card to be interacted with
@@ -47,13 +59,28 @@ function setupSelector()
 end
 
 function setupScoreboard()
-  scoreboard = Scoreboard(302, 0)
+  scoreboard = Scoreboard(302, 0, labels)
 end
 
 function handleA()
   if pd.buttonJustPressed(pd.kButtonA) then
     local selected = selector:which()
     cards[selected.col][selected.row]:show()
+    foundMap["Storybook"] = true
+  end
+end
+
+function checkForMatches()
+  -- check if any new matches have been found
+  for i=1,#labels do
+    if foundMap[labels[i]] ~= previousFound[labels[i]] then
+      scoreboard:update(labels[i])
+    end
+  end
+
+  -- update previousFound to current
+  for i=1,#labels do
+    previousFound[labels[i]] = foundMap[labels[i]]
   end
 end
 
@@ -62,7 +89,17 @@ function pd.update()
 
   gfx.sprite.update()
   pd.timer.updateTimers()
+  checkForMatches()
 end
+
+local bgImage = gfx.image.new("images/bg")
+gfx.sprite.setBackgroundDrawingCallback(
+  function(x, y, width, height)
+    gfx.setClipRect(x, y, width, height)
+    bgImage:draw(0, 0)
+    gfx.clearClipRect()
+  end
+)
 
 setupScoreboard()
 setupBoard()
