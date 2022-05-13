@@ -5,6 +5,7 @@ import "CoreLibs/graphics"
 import "CoreLibs/sprites"
 import "CoreLibs/timer"
 
+import "utility"
 import "card"
 import "select"
 import "scoreboard"
@@ -16,6 +17,8 @@ local gfx <const> = pd.graphics
 local board = { cols = 6, rows = 4, gap = 8}
 -- which matches we're looking for
 local labels = { "React", "GraphQL", "Prisma", "TypeScript", "Jest", "Storybook", "Webpack", "Babel", "Auth0", "Netlify", "Vercel", "Render" }
+local cardLabels = concat(shuffle(labels), shuffle(labels))
+
 -- keep track of which pairs have been found and if any changed since the last update()
 local foundMap = {}
 local previousFound = {}
@@ -30,21 +33,22 @@ local cards = {}
 local selector
 
 function setupBoard()
-  local card = Card(0, 0, 0, 0)
+  local card = Card('', 0, 0, 0, 0)
 
   for i=1,board.cols do
     cards[i] = {}
     for j=1,board.rows do
+      local cardNumber = i + ((j - 1) * board.cols)
       local spawnX = card.width * (i - 1) + (board.gap * i)
       local spawnY = card.height * (j - 1) + (board.gap * j)
-      cards[i][j] = Card(i, j, spawnX, spawnY)
+      cards[i][j] = Card(cardLabels[cardNumber], i, j, spawnX, spawnY)
       cards[i][j]:add()
     end
   end
 end
 
 function setupSelector()
-  local card = Card(0, 0, 0, 0)
+  local card = Card('', 0, 0, 0, 0)
   local options = {
     cols = board.cols,
     rows = board.rows,
