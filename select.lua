@@ -63,7 +63,7 @@ function Select:update()
     end
   end
 
-  local crankDirection = pd.getCrankTicks(6)
+  local crankDirection = pd.getCrankTicks(12)
 
   if crankDirection == 1 then
     -- clockwise
