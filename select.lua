@@ -95,20 +95,39 @@ function Select:update()
 end
 
 function Select:shake(dir)
-  self.shakeTimer = pd.timer.new(100, 0, 2, pd.easingFunctions.linear)
+  if (self.shakeTimer) then
+    print('shaking')
+    return
+  end
+
+  local startX = self.x
+  local startY = self.y
+
+  if dir == 'left-right' then
+    self.shakeTimer = pd.timer.new(100, -3, 3, pd.easingFunctions.linear)
+    self.shakeTimer.reverses = true
+  else
+    self.shakeTimer = pd.timer.new(100, 0, 2, pd.easingFunctions.linear)
+    self.shakeTimer.reverses = true
+  end
+
   self.shakeTimer.updateCallback = function(timer)
+    print('timer', timer.value, 'startY', startY)
+    print(startY)
     if dir == 'up' then
-      self:moveTo(self.x, self.y - timer.value)
+      self:moveTo(self.x, startY - timer.value)
     elseif dir == 'down' then
-      self:moveTo(self.x, self.y + timer.value)
+      self:moveTo(self.x, startY + timer.value)
     elseif dir == 'left' then
-      self:moveTo(self.x - timer.value, self.y)
+      self:moveTo(startX - timer.value, self.y)
     elseif dir == 'right' then
-      self:moveTo(self.x + timer.value, self.y)
+      self:moveTo(startX + timer.value, self.y)
+    elseif dir == 'left-right' then
+      self:moveTo(startX + timer.value, self.y)
     end
   end
 
-  pd.timer.performAfterDelay(100, function()
+  pd.timer.performAfterDelay(200, function()
     self.shakeTimer = nil
   end)
 end
