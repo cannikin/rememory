@@ -19,11 +19,11 @@ function Scoreboard:init(x, y, labels)
   self.font = gfx.font.new('fonts/Roobert-10-Bold')
 
   -- text sprite showing list of found matches
-  self.textTitle = gfx.sprite.new()
-  self.textTitle:setZIndex(20)
-  self.textTitle:setCenter(0, 0)
-  self.textTitle:moveTo(self.posX + self.paddingX, self.posY + self.paddingY)
-  self.textTitle:add()
+  self.text = gfx.sprite.new()
+  self.text:setZIndex(20)
+  self.text:setCenter(0, 0)
+  self.text:moveTo(self.posX + self.paddingX, self.posY + self.paddingY)
+  self.text:add()
 
   self:drawBackground()
   self:update()
@@ -47,7 +47,12 @@ function Scoreboard:update(label)
     end
   gfx.popContext()
 
-  self.textTitle:setImage(textImage)
+  self.text:setImage(textImage)
+end
+
+function Scoreboard:remove()
+  self.bg:remove()
+  self.text:remove()
 end
 
 function Scoreboard:drawBackground(x, y)

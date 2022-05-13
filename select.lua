@@ -31,6 +31,8 @@ function Select:update()
     return
   end
 
+  -- TODO: skip cards that are missing?
+
   if pd.buttonJustPressed(pd.kButtonUp) then
     if self.selected.row - 1 >= 1 then
       self.selected.row -= 1
