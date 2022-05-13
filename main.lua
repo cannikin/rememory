@@ -11,6 +11,7 @@ import "CoreLibs/timer"
 
 import "card"
 import "select"
+import "scoreboard"
 
 -- Declaring this "gfx" shorthand will make your life easier. Instead of having
 -- to preface all graphics calls with "playdate.graphics", just use "gfx."
@@ -19,83 +20,95 @@ import "select"
 
 local pd <const> = playdate
 local gfx <const> = pd.graphics
--- instantiate a single card so we know its dimensions
-sampleCard = Card(0, 0, 0, 0)
 
--- setup playing board
-cards = {}
-gridX = 6
-gridY = 4
--- which card is currently selected
-selectedX = 1
-selectedY = 1
+local cards = {}
+local sampleCard = Card(0, 0, 0, 0)
+local board = {}
+board['cols'] = 6
+board['rows'] = 4
+board['gap'] = 8
+local selected = {}
+selected['col'] = 1
+selected['row'] = 1
+local selector
 
-local gap = 8
-
-for i=1,gridX do
-  cards[i] = {}
-  for j=1,gridY do
-    local spawnX = sampleCard.width * (i - 1) + (gap * i)
-    local spawnY = sampleCard.height * (j - 1) + (gap * j)
-    cards[i][j] = Card(i, j, spawnX, spawnY)
-    cards[i][j]:add()
+function setupBoard()
+  for i=1,board.cols do
+    cards[i] = {}
+    for j=1,board.rows do
+      local spawnX = sampleCard.width * (i - 1) + (board.gap * i)
+      local spawnY = sampleCard.height * (j - 1) + (board.gap * j)
+      cards[i][j] = Card(i, j, spawnX, spawnY)
+      cards[i][j]:add()
+    end
   end
 end
 
--- setup selection rectangle
-select = Select(5, 5)
-selectGap = 5
+function setupSelector()
+  selector = Select(5, 5)
+end
 
-function pd.update()
-  local positionX = select.x
-  local positionY = select.y
+function setupScoreboard()
+  scoreboard = Scoreboard(302, 0)
+  scoreboard:add()
+end
+
+function handleMove()
+  local positionX = selector.x
+  local positionY = selector.y
 
   if pd.buttonJustPressed(pd.kButtonUp) then
-    if selectedY - 1 >= 1 then
-      selectedY -= 1
+    if selected.row - 1 >= 1 then
+      selected.row -= 1
     else
       -- shake selection sprite
     end
   end
 
   if pd.buttonJustPressed(pd.kButtonRight) then
-    if selectedX + 1 <= gridX then
-      selectedX += 1
+    if selected.col + 1 <= board.cols then
+      selected.col += 1
     else
       -- shake
     end
   end
 
   if pd.buttonJustPressed(pd.kButtonDown) then
-    if selectedY + 1 <= gridY then
-      selectedY += 1
+    if selected.row + 1 <= board.rows then
+      selected.row += 1
     else
       -- shake
     end
   end
 
   if pd.buttonJustPressed(pd.kButtonLeft) then
-    if selectedX - 1 >= 1 then
-      selectedX -= 1
+    if selected.col - 1 >= 1 then
+      selected.col -= 1
     else
       -- shake
     end
   end
 
   -- move selection box
-  local newX = sampleCard.width * (selectedX - 1) + (8 * selectedX) - (select.width - sampleCard.width) / 2
-  local newY = sampleCard.height * (selectedY - 1) + (8 * selectedY) - (select.height - sampleCard.height) / 2
-  select:moveTo(newX, newY)
+  local newX = sampleCard.width * (selected.col - 1) + (8 * selected.col) - (selector.width - sampleCard.width) / 2
+  local newY = sampleCard.height * (selected.row - 1) + (8 * selected.row) - (selector.height - sampleCard.height) / 2
+  selector:moveTo(newX, newY)
+end
 
+function handleA()
   if pd.buttonJustPressed(pd.kButtonA) then
-    cards[selectedX][selectedY]:show()
-    -- print('show', cards[selectedX][selectedY].xId, cards[selectedX][selectedY].yId)
+    cards[selected.col][selected.row]:show()
   end
-  -- Call the functions below in playdate.update() to draw sprites and keep
-  -- timers updated. (We aren't using timers in this example, but in most
-  -- average-complexity games, you will.)
+end
+
+function pd.update()
+  handleMove()
+  handleA()
 
   gfx.sprite.update()
   pd.timer.updateTimers()
-
 end
+
+setupScoreboard()
+setupBoard()
+setupSelector()
