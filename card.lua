@@ -22,13 +22,23 @@ end
 
 function Card:update()
   if self.side ~= self.lastShow then
+    local image = nil
+
     if self.side == 'back' then
-      -- local image = gfx.image.new("images/cards/back")
-      local image = gfx.image.new("images/cards/"..string.lower(self.label))
+      if pd.isSimulator then
+        image = gfx.image.new("images/cards/"..string.lower(self.label))
+      else
+        image = gfx.image.new("images/cards/back")
+      end
+
       self:setImage(image)
     elseif self.side == 'front' then
-      -- local image = gfx.image.new("images/cards/"..string.lower(self.label))
-      local image = gfx.image.new("images/cards/back")
+      if pd.isSimulator then
+        image = gfx.image.new("images/cards/back")
+      else
+        image = gfx.image.new("images/cards/"..string.lower(self.label))
+      end
+
       self:setImage(image)
     end
 
@@ -41,9 +51,11 @@ function Card:remove()
   Card.super.remove(self)
 end
 
-function Card:flip()
+function Card:flip(side)
   if (self.visible) then
-    if self.side == 'back' then
+    if side then
+      self.side = side
+    elseif self.side == 'back' then
       self.side = 'front'
     else
       self.side = 'back'

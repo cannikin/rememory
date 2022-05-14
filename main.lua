@@ -18,7 +18,6 @@ if not config then
   config = { showDescriptions = true }
   pd.datastore.write(config)
 end
-print(config)
 
 function setupMenu()
   local menu = pd.getSystemMenu()
@@ -58,6 +57,18 @@ function startGame()
   -- if a match is made there's a little delay before they are flipped back or
   -- removed, this timer keeps track
   matchTimer = nil
+
+  -- if there's currently a 2-card mismatch showing
+  mismatch = false
+
+  -- globally track crank position
+  crankTicks = 0
+
+  sounds = {
+    flip = pd.sound.sampleplayer.new("sounds/flip.wav"),
+    match = pd.sound.sampleplayer.new("sounds/match.wav"),
+    mismatch = pd.sound.sampleplayer.new("sounds/mismatch.wav")
+  }
 
   setupBoard()
   setupSelector()
@@ -135,6 +146,7 @@ function handleA()
     if (#showing == 2) then
       if showing[1].label == showing[2].label then
         scoreboard:update(showing[1].label)
+        sounds.match:play()
         -- two matching cards are showing, hide them after a delay
         matchTimer = pd.timer.performAfterDelay(1000, function()
           showing[1]:remove()
@@ -143,13 +155,19 @@ function handleA()
         end)
       else
         selector:shake('left-right')
+        sounds.mismatch:play()
+        -- when the cursor next moves, flip the cards back over
+        mismatch = true
         -- two mismatched cards are showing, flip them back over after a delay
-        matchTimer = pd.timer.performAfterDelay(1000, function()
-          showing[1]:flip()
-          showing[2]:flip()
-          matchTimer = nil
-        end)
+        -- matchTimer = pd.timer.performAfterDelay(500, function()
+        --   showing[1]:flip()
+        --   showing[2]:flip()
+        --   matchTimer = nil
+        -- end)
       end
+    else
+      -- if we're not going to play any other sound, play the card flip
+      sounds.flip:play()
     end
   end
 end
@@ -165,11 +183,28 @@ function pd.update()
   handleA()
   handleB()
 
+  crankTicks = pd.getCrankTicks(12)
+
   gfx.sprite.update()
   pd.timer.updateTimers()
 
-  -- check to see if any two matching cards are showing
-  -- checkForMatches()
+  if mismatch and (
+     pd.buttonJustPressed(pd.kButtonUp) or
+     pd.buttonJustPressed(pd.kButtonDown) or
+     pd.buttonJustPressed(pd.kButtonLeft) or
+     pd.buttonJustPressed(pd.kButtonRight) or
+     crankTicks ~= 0) then
+       flipAllCards('back')
+       mismatch = false
+  end
+end
+
+function flipAllCards(side)
+  for i=1,board.cols do
+    for j=1,board.rows do
+      cards[i][j]:flip(side)
+    end
+  end
 end
 
 local bgImage = gfx.image.new("images/bg")

@@ -65,9 +65,7 @@ function Select:update()
     end
   end
 
-  local crankDirection = pd.getCrankTicks(12)
-
-  if crankDirection == 1 then
+  if crankTicks == 1 then
     -- clockwise
     self.selected.col += 1
     if self.selected.col > self.cols then
@@ -78,7 +76,7 @@ function Select:update()
     if self.selected.row > self.rows then
       self.selected.row = 1
     end
-  elseif crankDirection == -1 then
+  elseif crankTicks == -1 then
     -- counter clockwise
     self.selected.col -= 1
     if self.selected.col < 1 then
@@ -96,7 +94,6 @@ end
 
 function Select:shake(dir)
   if (self.shakeTimer) then
-    print('shaking')
     return
   end
 
@@ -112,8 +109,6 @@ function Select:shake(dir)
   end
 
   self.shakeTimer.updateCallback = function(timer)
-    print('timer', timer.value, 'startY', startY)
-    print(startY)
     if dir == 'up' then
       self:moveTo(self.x, startY - timer.value)
     elseif dir == 'down' then
