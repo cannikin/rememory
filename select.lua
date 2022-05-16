@@ -18,6 +18,10 @@ function Select:init(options)
   -- keep track if something is in the process of moving
   self.moveTimer = nil
 
+  -- keep track of where we're currently going so that we can interrupt an
+  -- animation and just move immediately there
+  self.movingTo = {x = nil, y = nil}
+
   -- by default we want to animate the moving selector, but if we're using the
   -- crank we do *not* want to animate (feels weird)
   self.animateMove = true
@@ -25,7 +29,7 @@ function Select:init(options)
   -- keep track if something is in the process of shaking
   self.shakeTimer = nil
 
-  local image = gfx.image.new("images/select")
+  local image <const> = gfx.image.new("images/select")
   assert(image)
 
   self:setImage(image)
@@ -38,7 +42,7 @@ function Select:update()
   Select.super.update(self)
 
   -- ignore inputs if select box is currently shaking
-  if (self.shakeTimer or self.moveTimer) then
+  if (self.shakeTimer) then
     return
   end
 
@@ -46,6 +50,8 @@ function Select:update()
 
   if pd.buttonJustPressed(pd.kButtonUp) then
     self.animateMove = true
+    self:snapTo()
+
     if self.selected.row - 1 >= 1 then
       self.selected.row -= 1
     else
@@ -55,6 +61,8 @@ function Select:update()
 
   if pd.buttonJustPressed(pd.kButtonRight) then
     self.animateMove = true
+    self:snapTo()
+
     if self.selected.col + 1 <= self.cols then
       self.selected.col += 1
     else
@@ -64,6 +72,8 @@ function Select:update()
 
   if pd.buttonJustPressed(pd.kButtonDown) then
     self.animateMove = true
+    self:snapTo()
+
     if self.selected.row + 1 <= self.rows then
       self.selected.row += 1
     else
@@ -73,6 +83,8 @@ function Select:update()
 
   if pd.buttonJustPressed(pd.kButtonLeft) then
     self.animateMove = true
+    self:snapTo()
+
     if self.selected.col - 1 >= 1 then
       self.selected.col -= 1
     else
@@ -111,19 +123,39 @@ function Select:update()
   self:moveSelection()
 end
 
+-- if we're in the process of moving, immediately move there and cancel any
+-- timers that may be running
+function Select:snapTo()
+  if (self.movingTo.x) then
+    self:moveTo(self.movingTo.x, self.movingTo.y)
+    self.movingTo.x = nil
+    self.movingTo.y = nil
+  end
+  if self.moveTimer then
+    self.moveTimer:remove()
+    self.moveTimer = nil
+  end
+end
+
 function Select:shake(dir)
+  -- if moving, stop that and get ready for shake
+  if (self.moveTimer) then
+    self:snapTo()
+  end
+
+  -- already shaking, don't do it again
   if (self.shakeTimer) then
     return
   end
 
-  local startX = self.x
-  local startY = self.y
+  local startX <const> = self.x
+  local startY <const> = self.y
 
   if dir == 'left-right' then
-    self.shakeTimer = pd.timer.new(100, -3, 3, pd.easingFunctions.linear)
+    self.shakeTimer = pd.timer.new(75, startX-3, startX+3, pd.easingFunctions.linear)
     self.shakeTimer.reverses = true
   else
-    self.shakeTimer = pd.timer.new(100, 0, 2, pd.easingFunctions.linear)
+    self.shakeTimer = pd.timer.new(75, 0, 3, pd.easingFunctions.linear)
     self.shakeTimer.reverses = true
   end
 
@@ -137,7 +169,7 @@ function Select:shake(dir)
     elseif dir == 'right' then
       self:moveTo(startX + timer.value, self.y)
     elseif dir == 'left-right' then
-      self:moveTo(startX + timer.value, self.y)
+      self:moveTo(timer.value, self.y)
     end
   end
   self.shakeTimer.timerEndedCallback = function()
@@ -151,44 +183,41 @@ function Select:moveSelection()
     return
   end
 
-  local newX = self.colWidth * (self.selected.col - 1)
-  -- gap between cols
-  newX += self.gap * self.selected.col - (self.width - self.colWidth) / 2
-  local newY = self.rowHeight * (self.selected.row - 1)
-  -- gap between rows
-  newY += self.gap * self.selected.row - (self.height - self.rowHeight) / 2
+  -- figure out what the final destination of the selector will be
+  self.movingTo.x = self.colWidth * (self.selected.col - 1)
+  self.movingTo.x += self.gap * self.selected.col - (self.width - self.colWidth) / 2
+  self.movingTo.y = self.rowHeight * (self.selected.row - 1)
+  self.movingTo.y += self.gap * self.selected.row - (self.height - self.rowHeight) / 2
 
   -- don't bother with the rest of this if we're not actually moving
-  if self.x == newX and self.y == newY then
+  if self.x == self.movingTo.x and self.y == self.movingTo.y then
     return
   end
 
   -- if we're not animating, just move there and call it a day
   if not self.animateMove then
-    self:moveTo(newX, newY)
+    self:snapTo()
     return
   end
 
-  -- animate the move
-  if math.ceil(self.x) ~= newX then
-    -- horizontal
-    self.moveTimer = pd.timer.new(150, self.x, newX, pd.easingFunctions.outQuad)
+  -- if we got here then we're animating the move
+  if self.x ~= self.movingTo.x then     -- horizontal
+    self.moveTimer = pd.timer.new(150, self.x, self.movingTo.x, pd.easingFunctions.outQuad)
     self.moveTimer.updateCallback = function(timer)
-      self:moveTo(math.ceil(timer.value), newY)
+      self:moveTo(timer.value, self.movingTo.y)
     end
-    self.moveTimer.timerEndedCallback = function()
-      self:moveTo(newX, newY)
-      self.moveTimer = nil
-    end
-  elseif math.ceil(self.y) ~= newY then
-    -- vertical
-    self.moveTimer = pd.timer.new(150, self.y, newY, pd.easingFunctions.outQuad)
+  elseif self.y ~= self.movingTo.y then -- vertical
+    self.moveTimer = pd.timer.new(150, self.y, self.movingTo.y, pd.easingFunctions.outQuad)
     self.moveTimer.updateCallback = function(timer)
-      self:moveTo(newX, math.ceil(timer.value))
+      self:moveTo(self.movingTo.x, timer.value)
     end
+  end
+
+  -- when the timer ends, snap to the end point (timer may have ended on some
+  -- random decimal, close to but not exactly the end point)
+  if self.moveTimer then
     self.moveTimer.timerEndedCallback = function()
-      self:moveTo(newX, newY)
-      self.moveTimer = nil
+      self:snapTo()
     end
   end
 end
