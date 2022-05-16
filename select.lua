@@ -9,9 +9,16 @@ function Select:init(options)
   self.colWidth = options.colWidth
   self.rowHeight = options.rowHeight
   self.gap = options.gap
+
+  -- keep track of which col/row is currently selected
   self.selected = {}
   self.selected["col"] = 1
   self.selected["row"] = 1
+
+  -- keep track if something is in the process of moving
+  self.moveTimer = nil
+
+  -- keep track if something is in the process of shaking
   self.shakeTimer = nil
 
   local image = gfx.image.new("images/select")
@@ -27,7 +34,7 @@ function Select:update()
   Select.super.update(self)
 
   -- ignore inputs if select box is currently shaking
-  if (self.shakeTimer) then
+  if (self.shakeTimer or self.moveTimer) then
     return
   end
 
@@ -121,20 +128,45 @@ function Select:shake(dir)
       self:moveTo(startX + timer.value, self.y)
     end
   end
-
-  pd.timer.performAfterDelay(200, function()
+  self.shakeTimer.timerEndedCallback = function()
+    self:moveTo(startX, startY)
     self.shakeTimer = nil
-  end)
+  end
 end
 
 function Select:moveSelection()
-  -- TODO: use timer to animate selection box moving
-  local newX = self.colWidth * (self.selected.col - 1)
-  local newXGap = self.gap * self.selected.col - (self.width - self.colWidth) / 2
-  local newY = self.rowHeight * (self.selected.row - 1)
-  local newYGap = self.gap * self.selected.row - (self.height - self.rowHeight) / 2
+  if (self.moveTimer or self.shakeTimer) then
+    return
+  end
 
-  self:moveTo(newX + newXGap, newY + newYGap)
+  local newX = self.colWidth * (self.selected.col - 1)
+  -- gap between cols
+  newX += self.gap * self.selected.col - (self.width - self.colWidth) / 2
+  local newY = self.rowHeight * (self.selected.row - 1)
+  -- gap between rows
+  newY += self.gap * self.selected.row - (self.height - self.rowHeight) / 2
+
+  if math.ceil(self.x) ~= newX then
+    -- horizontal
+    self.moveTimer = pd.timer.new(150, self.x, newX, pd.easingFunctions.outQuad)
+    self.moveTimer.updateCallback = function(timer)
+      self:moveTo(math.ceil(timer.value), self.y)
+    end
+    self.moveTimer.timerEndedCallback = function()
+      self:moveTo(newX, newY)
+      self.moveTimer = nil
+    end
+  elseif math.ceil(self.y) ~= newY then
+    -- vertical
+    self.moveTimer = pd.timer.new(150, self.y, newY, pd.easingFunctions.outQuad)
+    self.moveTimer.updateCallback = function(timer)
+      self:moveTo(self.x, math.ceil(timer.value))
+    end
+    self.moveTimer.timerEndedCallback = function()
+      self:moveTo(newX, newY)
+      self.moveTimer = nil
+    end
+  end
 end
 
 function Select:which()

@@ -129,6 +129,9 @@ function handleA()
     return
   end
 
+  -- TODO: if a mismatch is present and someone presses A, hide cards
+  -- unless the card to flip is one of the mismatched ones, then it should show
+
   if pd.buttonJustPressed(pd.kButtonA) then
     local selected = selector:which()
     cards[selected.col][selected.row]:flip()
