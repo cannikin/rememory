@@ -18,6 +18,10 @@ function Select:init(options)
   -- keep track if something is in the process of moving
   self.moveTimer = nil
 
+  -- by default we want to animate the moving selector, but if we're using the
+  -- crank we do *not* want to animate (feels weird)
+  self.animateMove = true
+
   -- keep track if something is in the process of shaking
   self.shakeTimer = nil
 
@@ -41,6 +45,7 @@ function Select:update()
   -- TODO: skip cards that are missing?
 
   if pd.buttonJustPressed(pd.kButtonUp) then
+    self.animateMove = true
     if self.selected.row - 1 >= 1 then
       self.selected.row -= 1
     else
@@ -49,6 +54,7 @@ function Select:update()
   end
 
   if pd.buttonJustPressed(pd.kButtonRight) then
+    self.animateMove = true
     if self.selected.col + 1 <= self.cols then
       self.selected.col += 1
     else
@@ -57,6 +63,7 @@ function Select:update()
   end
 
   if pd.buttonJustPressed(pd.kButtonDown) then
+    self.animateMove = true
     if self.selected.row + 1 <= self.rows then
       self.selected.row += 1
     else
@@ -65,6 +72,7 @@ function Select:update()
   end
 
   if pd.buttonJustPressed(pd.kButtonLeft) then
+    self.animateMove = true
     if self.selected.col - 1 >= 1 then
       self.selected.col -= 1
     else
@@ -74,6 +82,8 @@ function Select:update()
 
   if crankTicks == 1 then
     -- clockwise
+    self.animateMove = false
+
     self.selected.col += 1
     if self.selected.col > self.cols then
       self.selected.col = 1
@@ -85,6 +95,8 @@ function Select:update()
     end
   elseif crankTicks == -1 then
     -- counter clockwise
+    self.animateMove = false
+
     self.selected.col -= 1
     if self.selected.col < 1 then
       self.selected.col = self.cols
@@ -146,11 +158,23 @@ function Select:moveSelection()
   -- gap between rows
   newY += self.gap * self.selected.row - (self.height - self.rowHeight) / 2
 
+  -- don't bother with the rest of this if we're not actually moving
+  if self.x == newX and self.y == newY then
+    return
+  end
+
+  -- if we're not animating, just move there and call it a day
+  if not self.animateMove then
+    self:moveTo(newX, newY)
+    return
+  end
+
+  -- animate the move
   if math.ceil(self.x) ~= newX then
     -- horizontal
     self.moveTimer = pd.timer.new(150, self.x, newX, pd.easingFunctions.outQuad)
     self.moveTimer.updateCallback = function(timer)
-      self:moveTo(math.ceil(timer.value), self.y)
+      self:moveTo(math.ceil(timer.value), newY)
     end
     self.moveTimer.timerEndedCallback = function()
       self:moveTo(newX, newY)
@@ -160,7 +184,7 @@ function Select:moveSelection()
     -- vertical
     self.moveTimer = pd.timer.new(150, self.y, newY, pd.easingFunctions.outQuad)
     self.moveTimer.updateCallback = function(timer)
-      self:moveTo(self.x, math.ceil(timer.value))
+      self:moveTo(newX, math.ceil(timer.value))
     end
     self.moveTimer.timerEndedCallback = function()
       self:moveTo(newX, newY)
