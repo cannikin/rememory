@@ -9,6 +9,7 @@ import "utility"
 import "card"
 import "select"
 import "scoreboard"
+import "popup"
 
 local pd <const> = playdate
 local gfx <const> = pd.graphics
@@ -34,29 +35,59 @@ function startGame()
   -- size of the board
   board = { cols = 6, rows = 4, gap = 8}
 
-  -- which matches we're looking for
-  labels = { "React", "GraphQL", "Prisma", "TypeScript", "Jest", "Storybook", "Webpack", "Babel", "Auth0", "Netlify", "Vercel", "Render" }
+  local dataIndex <const> = { "react", "graphql", "prisma", "typescript", "jest", "storybook", "webpack", "babel", "auth0", "netlify", "vercel", "render" }
+
+  data = {
+    react = {
+      title = "React",
+      subtitle = "Frontent Rendering",
+      desc = "Draws everything to the screen, interacts with the API and keeps your app running smoothly",
+      url = "https://reactjs.org"
+    },
+    graphql = {
+      title = "GraphQL"
+    },
+    prisma = {
+      title = "Prisma"
+    },
+    typescript = {
+      title = "TypeScript"
+    },
+    jest = {
+      title = "Jest"
+    },
+    storybook = {
+      title = "Storybook"
+    },
+    webpack = {
+      title = "Webpack"
+    },
+    babel = {
+      title = "Babel"
+    },
+    auth0 = {
+      title = "Auth0"
+    },
+    netlify = {
+      title = "Netlify"
+    },
+    vercel = {
+      title = "Vercel"
+    },
+    render = {
+      title = "Render"
+    }
+  }
+
+  local labels = {}
+  local titles = {}
+  for _, label in ipairs(dataIndex) do
+    table.insert(labels, #labels + 1, label)
+    table.insert(titles, #titles + 1, data[label].title)
+  end
 
   -- randomized labels list, one for each card on the board
   cardLabels = concat(shuffle(labels), shuffle(labels))
-
-  -- keep track of which pairs have been found and if any changed since the last update()
-  foundMap = {}
-  previousFound = {}
-  for i=1,#labels do
-    foundMap[labels[i]] = false
-    previousFound[labels[i]] = false
-  end
-
-  -- 2 dimensional array of cards on the board
-  cards = {}
-
-  -- sprite which shows a highlighted card to be interacted with
-  selector = {}
-
-  -- if a match is made there's a little delay before they are flipped back or
-  -- removed, this timer keeps track
-  matchTimer = nil
 
   -- if there's currently a 2-card mismatch showing
   mismatch = false
@@ -74,9 +105,10 @@ function startGame()
   -- track the most recent sequence of keys pressed, for secrets!
   keyBuffer = {}
 
-  setupBoard()
-  setupSelector()
-  setupScoreboard()
+  cards = setupBoard()
+  selector = setupSelector()
+  scoreboard = Scoreboard(302, 0, titles)
+  popup = Popup(30)
 end
 
 -- removes any existing sprites from the stack so they can get redrawn from scratch
@@ -99,6 +131,7 @@ function setupBoard()
 
   -- sample card so we can get its size
   local card <const> = Card('', 0, 0, 0, 0)
+  local cards = {}
 
   -- place cards on the board
   for i=1,board.cols do
@@ -111,6 +144,8 @@ function setupBoard()
       cards[i][j]:add()
     end
   end
+
+  return cards
 end
 
 -- The Selector is the little box that highlights the selected card.
@@ -128,13 +163,7 @@ function setupSelector()
     startY = 5
   }
 
-  selector = Select(options)
-end
-
--- The Scoreboard is the box on the right that keeps track of the cards you've
--- matched so far.
-function setupScoreboard()
-  scoreboard = Scoreboard(302, 0, labels)
+  return Select(options)
 end
 
 -- flips all cards to either their front or back sides
@@ -172,15 +201,23 @@ function handleMismatch()
   end
 end
 
+function handleMatch(one, two)
+  scoreboard:update(one.label)
+  sounds.match:play()
+  one:remove()
+  two:remove()
+
+  if config.showDescriptions then
+    popup:show(one.label)
+  end
+end
+
 -- What to do when pressing the A button
 function handleA()
-  -- if a timer is already running don't let any other A button actions take place
-  if matchTimer then
+  -- if the popup is visible, let it worry about buttons
+  if (popup.visible) then
     return
   end
-
-  -- TODO: if a mismatch is present and someone presses A, hide cards
-  -- unless the card to flip is one of the mismatched ones, then it should show
 
   if pd.buttonJustPressed(pd.kButtonA) then
     recordKey('a')
@@ -208,14 +245,7 @@ function handleA()
     -- are there exactly two cards visible?
     if (#showing == 2) then
       if showing[1].label == showing[2].label then
-        -- we have a match :)
-        scoreboard:update(showing[1].label)
-        sounds.match:play()
-        matchTimer = pd.timer.performAfterDelay(1000, function()
-          showing[1]:remove()
-          showing[2]:remove()
-          matchTimer = nil
-        end)
+        handleMatch(showing[1], showing[2])
       else
         -- not a match :(
         selector:shake('left-right')
@@ -259,6 +289,8 @@ function pd.update()
   crankTicks = pd.getCrankTicks(12)
 
   handleMismatch()
+
+  popup:update()
 
   -- watch for inputs
   handleA()

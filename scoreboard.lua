@@ -32,14 +32,14 @@ end
 -- only called when a match is found
 function Scoreboard:update(label)
   if label then
-    self.foundMap[label] = true
+    self.foundMap[string.lower(label)] = true
   end
 
   local textImage = gfx.image.new(98, 240)
   gfx.pushContext(textImage)
     gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
     for i=1,#self.labels do
-      if self.foundMap[self.labels[i]] then
+      if self.foundMap[string.lower(self.labels[i])] then
         self.font:drawText(self.labels[i], 0, 19 * (i - 1))
       else
         self.halfFont:drawText(self.labels[i], 0, 19 * (i - 1))

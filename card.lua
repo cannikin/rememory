@@ -21,6 +21,8 @@ function Card:init(label, xId, yId, xPos, yPos)
 end
 
 function Card:update()
+  Card.super.update(self)
+
   if self.side ~= self.lastShow then
     local image = nil
 
