@@ -15,8 +15,8 @@ function Scoreboard:init(x, y, labels)
   self.foundMap = {}
 
   -- setup fonts
-  self.halfFont = gfx.font.new('fonts/Roobert-10-Bold-Halved')
-  self.font = gfx.font.new('fonts/Roobert-10-Bold')
+  self.halfFont = gfx.font.new('fonts/Roobert/Roobert-10-Bold-Halved')
+  self.font = gfx.font.new('fonts/Roobert/Roobert-10-Bold')
 
   -- text sprite showing list of found matches
   self.text = gfx.sprite.new()

@@ -20,9 +20,87 @@ if not config then
   pd.datastore.write(config)
 end
 
+local DATA_INDEX <const> = { "react", "graphql", "prisma", "typescript", "jest", "storybook", "webpack", "babel", "auth0", "supabase", "netlify", "vercel" }
+
+local DATA <const> = {
+  react = {
+    title = "React",
+    subtitle = "Frontend Rendering",
+    desc = "The world’s most popular rendering\nengine powers Redwood’s web\nfrontend. And just wait until you\nyou try Redwood's router.",
+    url = "https://reactjs.org"
+  },
+  graphql = {
+    title = "GraphQL",
+    infoTitle = "GraphQL Yoga",
+    subtitle = "API Engine",
+    desc = "Some text goes here",
+    url = "https://graphql-yoga.com"
+  },
+  prisma = {
+    title = "Prisma",
+    subtitle = "Database Access and ORM",
+    desc = "Some text goes here",
+    url = "https://prisma.io"
+  },
+  typescript = {
+    title = "TypeScript",
+    subtitle = "JavaScript + Types",
+    desc = "Some text goes here",
+    url = "https://typescriptlang.org"
+  },
+  jest = {
+    title = "Jest",
+    subtitle = "Testing Framework",
+    desc = "Some text goes here",
+    url = "https://jestjs.io"
+  },
+  storybook = {
+    title = "Storybook",
+    subtitle = "UI Component Builder",
+    desc = "Some text goes here",
+    url = "https://storybook.js.org"
+  },
+  webpack = {
+    title = "Webpack",
+    subtitle = "Module Bundler",
+    desc = "Some text goes here",
+    url = "https://webpack.js.org"
+  },
+  babel = {
+    title = "Babel",
+    subtitle = "JavaScript Compiler",
+    desc = "Some text goes here",
+    url = "https://babeljs.io"
+  },
+  auth0 = {
+    title = "Auth0",
+    subtitle = "Hosted Auth Provider",
+    desc = "Some text goes here",
+    url = "https://auth0.com"
+  },
+  netlify = {
+    title = "Netlify",
+    subtitle = "Build & Deploy",
+    desc = "Some text goes here",
+    url = "https://www.netlify.com"
+  },
+  vercel = {
+    title = "Vercel",
+    subtitle = "Build & Deploy",
+    desc = "Some text goes here",
+    url = "https://vercel.com"
+  },
+  supabase = {
+    title = "Supabase",
+    subtitle = "Auth & Database Provider",
+    desc = "Some text goes here",
+    url = "https://supabase.com"
+  }
+}
+
 function setupMenu()
   local menu <const> = pd.getSystemMenu()
-  menu:addCheckmarkMenuItem('popups', config.showDescriptions, function()
+  menu:addCheckmarkMenuItem('info cards', config.showDescriptions, function()
     config.showDescriptions = not config.showDescriptions
     pd.datastore.write(config)
   end)
@@ -35,55 +113,11 @@ function startGame()
   -- size of the board
   board = { cols = 6, rows = 4, gap = 8}
 
-  local dataIndex <const> = { "react", "graphql", "prisma", "typescript", "jest", "storybook", "webpack", "babel", "auth0", "netlify", "vercel", "render" }
-
-  data = {
-    react = {
-      title = "React",
-      subtitle = "Frontent Rendering",
-      desc = "Draws everything to the screen, interacts with the API and keeps your app running smoothly",
-      url = "https://reactjs.org"
-    },
-    graphql = {
-      title = "GraphQL"
-    },
-    prisma = {
-      title = "Prisma"
-    },
-    typescript = {
-      title = "TypeScript"
-    },
-    jest = {
-      title = "Jest"
-    },
-    storybook = {
-      title = "Storybook"
-    },
-    webpack = {
-      title = "Webpack"
-    },
-    babel = {
-      title = "Babel"
-    },
-    auth0 = {
-      title = "Auth0"
-    },
-    netlify = {
-      title = "Netlify"
-    },
-    vercel = {
-      title = "Vercel"
-    },
-    render = {
-      title = "Render"
-    }
-  }
-
   local labels = {}
   local titles = {}
-  for _, label in ipairs(dataIndex) do
+  for _, label in ipairs(DATA_INDEX) do
     table.insert(labels, #labels + 1, label)
-    table.insert(titles, #titles + 1, data[label].title)
+    table.insert(titles, #titles + 1, DATA[label].title)
   end
 
   -- randomized labels list, one for each card on the board
@@ -207,8 +241,9 @@ function handleMatch(one, two)
   one:remove()
   two:remove()
 
+  print(config.showDescriptions)
   if config.showDescriptions then
-    popup:show(one.label)
+    popup:show(DATA[one.label])
   end
 end
 
@@ -304,3 +339,5 @@ end
 
 setupMenu()
 startGame()
+
+popup:show(DATA.react)

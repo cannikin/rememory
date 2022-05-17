@@ -179,7 +179,7 @@ function Select:shake(dir)
 end
 
 function Select:moveSelection()
-  if (self.moveTimer or self.shakeTimer) then
+  if (popup.visible or self.moveTimer or self.shakeTimer) then
     return
   end
 
