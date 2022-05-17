@@ -52,8 +52,16 @@ function Select:update()
     self.animateMove = true
     self:snapTo()
 
-    if self.selected.row - 1 >= 1 then
-      self.selected.row -= 1
+    local newRow = 0
+    for i=self.selected.row-1, 1, -1 do
+      if cards[self.selected.col][i].visible then
+        newRow = i
+        break
+      end
+    end
+
+    if newRow > 0 then
+      self.selected.row = newRow
     else
       self:shake('up')
     end
@@ -63,8 +71,18 @@ function Select:update()
     self.animateMove = true
     self:snapTo()
 
-    if self.selected.col + 1 <= self.cols then
-      self.selected.col += 1
+    -- find the next card that's still on the screen
+    local newCol = 0
+    for i=self.selected.col+1, self.cols do
+      print(i)
+      if cards[i][self.selected.row].visible then
+        newCol = i
+        break
+      end
+    end
+
+    if newCol > 0 then
+      self.selected.col = newCol
     else
       self:shake('right')
     end
@@ -74,8 +92,16 @@ function Select:update()
     self.animateMove = true
     self:snapTo()
 
-    if self.selected.row + 1 <= self.rows then
-      self.selected.row += 1
+    local newRow = 0
+    for i=self.selected.row+1, self.rows do
+      if cards[self.selected.col][i].visible then
+        newRow = i
+        break
+      end
+    end
+
+    if newRow > 0 then
+      self.selected.row = newRow
     else
       self:shake('down')
     end
@@ -85,8 +111,17 @@ function Select:update()
     self.animateMove = true
     self:snapTo()
 
-    if self.selected.col - 1 >= 1 then
-      self.selected.col -= 1
+    local newCol = 0
+    for i=self.selected.col-1, 1, -1 do
+      print(i)
+      if cards[i][self.selected.row].visible then
+        newCol = i
+        break
+      end
+    end
+
+    if newCol > 0 then
+      self.selected.col = newCol
     else
       self:shake('left')
     end
