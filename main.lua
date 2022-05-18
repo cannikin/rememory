@@ -16,20 +16,32 @@ local gfx <const> = pd.graphics
 
 local config = pd.datastore.read()
 if not config then
-  config = { showDescriptions = true }
+  config = { showDescriptions = true, sounds = true }
   pd.datastore.write(config)
 end
 
 local DATA_INDEX <const> = { "react", "graphql", "prisma", "typescript", "jest", "storybook", "webpack", "babel", "auth0", "supabase", "netlify", "vercel" }
 local DATA <const> = json.decodeFile("cards.json")
 
+local CHEATS = {
+  konami = {
+    keys = { 'u', 'u', 'd', 'd', 'l', 'r', 'l', 'r', 'b', 'a' },
+    activated = false
   }
 }
 
+-- tracks whether cards should have the opposite behavior. if `true`, then
+-- flipping them to their BACK will be considered showing for matches
+inverted = false
+
 function setupMenu()
   local menu <const> = pd.getSystemMenu()
-  menu:addCheckmarkMenuItem('info cards', config.showDescriptions, function()
-    config.showDescriptions = not config.showDescriptions
+  menu:addCheckmarkMenuItem('info cards', config.showDescriptions, function(value)
+    config.showDescriptions = value
+    pd.datastore.write(config)
+  end)
+  menu:addCheckmarkMenuItem('sounds', config.sounds, function(value)
+    config.sounds = value
     pd.datastore.write(config)
   end)
   menu:addMenuItem('start over', function()
@@ -60,8 +72,18 @@ function startGame()
   -- get all sounds in memory
   sounds = {
     flip = pd.sound.sampleplayer.new("sounds/flip.wav"),
-    match = pd.sound.sampleplayer.new("sounds/match.wav"),
-    mismatch = pd.sound.sampleplayer.new("sounds/mismatch.wav")
+    konami = pd.sound.sampleplayer.new("sounds/konami2.wav")
+  }
+  filePlayer = pd.sound.fileplayer.new()
+  soundMeta = {
+    match = {
+      counter = 1,
+      max = 6
+    },
+    mismatch = {
+      counter = 1,
+      max = 8
+    }
   }
 
   -- track the most recent sequence of keys pressed, for secrets!
@@ -145,7 +167,7 @@ function recordKey(key)
   end
 end
 
--- if two mismatched cards are showm, as soon as a button is pressed or the
+-- if two mismatched cards are shown, as soon as a button is pressed or the
 -- crank turns, flip them back over
 function handleMismatch()
   if not mismatch then
@@ -165,25 +187,37 @@ end
 
 function handleMatch(one, two)
   scoreboard:update(one.label)
-  sounds.match:play()
+  play("match")
+
   one:remove()
   two:remove()
 
-  print(config.showDescriptions)
   if config.showDescriptions then
     popup:show(DATA[one.label])
   end
 end
 
+function play(name)
+  if not config.sounds then return end
+
+  local meta = soundMeta[name]
+  filePlayer:load("sounds/"..name..meta.counter)
+  filePlayer:play()
+  meta.counter += 1
+  if meta.counter > meta.max then
+    meta.counter = 1
+  end
+end
+
 -- What to do when pressing the A button
 function handleA()
-  -- if the popup is visible, let it worry about buttons
-  if (popup.visible) then
-    return
-  end
-
   if pd.buttonJustPressed(pd.kButtonA) then
     recordKey('a')
+
+    -- if the popup is visible, let it worry about buttons
+    if (popup.visible) then
+      return
+    end
 
     -- flip over the card that's currently selected, if visible
     local selected = selector:which()
@@ -212,14 +246,16 @@ function handleA()
       else
         -- not a match :(
         selector:shake('left-right')
-        sounds.mismatch:play()
+        mismatchSoundIncrement = play("mismatch")
         -- keep track so that when the cursor next moves or button pressed,
         -- we'll know to flip the cards back over
         mismatch = true
       end
     else
       -- if we're not going to play any other sound, play the card flip
-      sounds.flip:play()
+      if config.sounds then
+        sounds.flip:play()
+      end
     end
   end
 end
@@ -246,13 +282,48 @@ function handleD()
   end
 end
 
+function handleCheats()
+  if CHEATS.konami.activated then return end -- already cheated
+  if #keyBuffer < 10 then return end         -- not enough keys in buffer
+
+  local activate = true
+  for i=1,#CHEATS.konami.keys do
+    if keyBuffer[i] ~= CHEATS.konami.keys[i] then
+      activate = false
+    end
+  end
+
+  if not activate then return end -- buffer didn't match cheat code
+
+  CHEATS.konami.activated = true
+  if config.sounds then
+    sounds.konami:play()
+  end
+  inverted = true
+
+  -- reveal the board
+  for i=1,board.rows do
+    for j=1,board.cols do
+      pd.timer.performAfterDelay(75 * j + ((i - 1) * board.cols * 50), function()
+        -- hack to trick the cards into updating themselves when becoming
+        -- inverted - otherwise it thinks it's already showing the correct side
+        cards[j][i].lastShow = 'front'
+        cards[j][i]:flip('back')
+      end)
+    end
+  end
+
+end
+
 function pd.update()
   -- crankTicks can only be called one per update loop so do it here for
   -- everyone to use the value
   crankTicks = pd.getCrankTicks(12)
 
+  -- if there are any mismatches visible
   handleMismatch()
 
+  -- if the popup is visible, it should start listening for key presses
   popup:update()
 
   -- watch for inputs
@@ -260,7 +331,10 @@ function pd.update()
   handleB()
   handleD()
 
-  -- draw everything
+  -- check if a secret code has been entered!
+  handleCheats()
+
+  -- tell the playdate to do its thing
   gfx.sprite.update()
   pd.timer.updateTimers()
 end
@@ -268,4 +342,4 @@ end
 setupMenu()
 startGame()
 
-popup:show(DATA.react)
+-- popup:show(DATA.graphql)

@@ -10,12 +10,12 @@ function Card:init(label, xId, yId, xPos, yPos)
   -- keep track of which side is showing and which side was showing last frame
   -- so that we only need to update() if a change occurs
   self.side = 'back'
-  self.lastSide = 'back'
   self.visible = true
 
-  local back = gfx.image.new("images/cards/back")
+  self.back = gfx.image.new("images/cards/back")
+  self.front = gfx.image.new("images/cards/"..string.lower(self.label))
 
-  self:setImage(back)
+  self:setImage(self.back)
   self:setCenter(0,0)
   self:moveTo(xPos, yPos)
 end
@@ -24,24 +24,12 @@ function Card:update()
   Card.super.update(self)
 
   if self.side ~= self.lastShow then
-    local image = nil
+    print('gonna flip')
 
     if self.side == 'back' then
-      if pd.isSimulator then
-        image = gfx.image.new("images/cards/"..string.lower(self.label))
-      else
-        image = gfx.image.new("images/cards/back")
-      end
-
-      self:setImage(image)
+      if inverted then self:setImage(self.front) else self:setImage(self.back) end
     elseif self.side == 'front' then
-      if pd.isSimulator then
-        image = gfx.image.new("images/cards/back")
-      else
-        image = gfx.image.new("images/cards/"..string.lower(self.label))
-      end
-
-      self:setImage(image)
+      if inverted then self:setImage(self.back) else self:setImage(self.front) end
     end
 
     self.lastShow = self.side
@@ -54,12 +42,16 @@ function Card:remove()
 end
 
 function Card:flip(side)
+  print('flip()')
   if (self.visible) then
     if side then
+      print('set', side)
       self.side = side
     elseif self.side == 'back' then
+      print('guessed front')
       self.side = 'front'
     else
+      print('guessed back')
       self.side = 'back'
     end
   end
