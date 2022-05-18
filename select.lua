@@ -74,7 +74,6 @@ function Select:update()
     -- find the next card that's still on the screen
     local newCol = 0
     for i=self.selected.col+1, self.cols do
-      print(i)
       if cards[i][self.selected.row].visible then
         newCol = i
         break
@@ -113,7 +112,6 @@ function Select:update()
 
     local newCol = 0
     for i=self.selected.col-1, 1, -1 do
-      print(i)
       if cards[i][self.selected.row].visible then
         newCol = i
         break
