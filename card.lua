@@ -24,8 +24,6 @@ function Card:update()
   Card.super.update(self)
 
   if self.side ~= self.lastShow then
-    print('gonna flip')
-
     if self.side == 'back' then
       if inverted then self:setImage(self.front) else self:setImage(self.back) end
     elseif self.side == 'front' then
@@ -42,7 +40,6 @@ function Card:remove()
 end
 
 function Card:flip(side)
-  print('flip()')
   if (self.visible) then
     if side then
       print('set', side)
