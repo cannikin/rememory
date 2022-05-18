@@ -1,0 +1,75 @@
+{
+  "auth0": {
+    "desc": "Why worry about login when Auth0\ncan do it for you? Auth0 can even\nhandle the UI for your login and\nsignup pages. Keep your app and user\ndata secure and let someone else\nworry about the details.",
+    "subtitle": "Hosted Auth Provider",
+    "title": "Auth0",
+    "url": "auth0.com"
+  },
+  "babel": {
+    "desc": "With Babel, Redwood can perform\nsome neat tricks, like never needing\nto import \"react\" into your components.\nEasily extendable with your own\nplugins.",
+    "subtitle": "JavaScript Compiler",
+    "title": "Babel",
+    "url": "babeljs.io"
+  },
+  "graphql": {
+    "desc": "Fully featured, performant and\nextendable GraphQL JS server.\nRedwood automatically creates\nresolvers from plain JS functions\nmaking your business logic\nshareable across your backend.",
+    "infoTitle": "GraphQL Yoga",
+    "subtitle": "API Engine",
+    "title": "GraphQL",
+    "url": "graphql-yoga.com"
+  },
+  "jest": {
+    "desc": "Redwood augments Jest with\n\"Scenarios\" making it easy to setup\nyour database for a given scenario,\nplus GraphQL mocking with MSW to\neasily test data flow.",
+    "subtitle": "Testing Framework",
+    "title": "Jest",
+    "url": "jestjs.io"
+  },
+  "netlify": {
+    "desc": "Distribute your frontend across\nNetlify's custom CDN, run your GraphQL\nendpoint and custom functions\nwith AWS Lambda, and get access to\nadditional features like background\nworkers, forms, analytics, and more.",
+    "subtitle": "Build & Deploy",
+    "title": "Netlify",
+    "url": "netlify.com"
+  },
+  "prisma": {
+    "desc": "Supporting SQLite, PostgreSQL\nMySQL, SQL Server, MongoDB\nand CockroachDB, this flexible\nORM also helps manage your schema\nwith versioned migrations.",
+    "subtitle": "Database Access and ORM",
+    "title": "Prisma",
+    "url": "prisma.io"
+  },
+  "react": {
+    "desc": "The world's most popular rendering\nengine powers Redwood's web\nfrontend. And just wait until you\nyou try Redwood's router.",
+    "subtitle": "Frontend Rendering",
+    "title": "React",
+    "url": "reactjs.org"
+  },
+  "storybook": {
+    "desc": "Build your UI in isolation and easily\nview and catalog your components\nin every possible state. You'll end\nup with a comprehensive design\nreference for free!",
+    "subtitle": "UI Component Builder",
+    "title": "Storybook",
+    "url": "storybook.js.org"
+  },
+  "supabase": {
+    "desc": "Your application needs a database,\nand Supabase has just the thing:\nan open source Firebase alternative,\ncompatible with PostgreSQL. They can\nalso host your authentication client,\nprovide storage, and more.",
+    "subtitle": "Auth & Database Provider",
+    "title": "Supabase",
+    "url": "supabase.com"
+  },
+  "typescript": {
+    "desc": "Redwood is completely typed,\n front and backend. It watches\nyour schema and GraphQL\ndefinitions for changes,\ngenerating types on the fly.",
+    "subtitle": "JavaScript + Types",
+    "title": "TypeScript",
+    "url": "typescriptlang.org"
+  },
+  "vercel": {
+    "desc": "Vercel features a global edge network\nand extensive support for SSR.",
+    "subtitle": "Build & Deploy",
+    "title": "Vercel",
+    "url": "vercel.com"
+  },
+  "webpack": {
+    "desc": "Prepare your assets for production\nwith the most widely used bundler\nin the world today. Enjoy a zero config\nexperience out of the box, but\nwith the ability to customize when\nthe time comes.",
+    "subtitle": "Module Bundler",
+    "title": "Webpack",
+    "url": "webpack.js.org"
+  }
+}
