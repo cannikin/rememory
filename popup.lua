@@ -20,7 +20,7 @@ function Popup:init(z)
     title = gfx.font.new('fonts/Roobert/Roobert-11-Bold'),
     subtitle = gfx.font.new('fonts/Roobert/Roobert-10-Bold'),
     desc = gfx.font.new('fonts/Nontendo/Nontendo-Light'),
-    actions = gfx.font.new('fonts/Roobert/Roobert-10-Bold')
+    url = gfx.font.new('fonts/Roobert/Roobert-10-Bold')
   }
   self.sprites = {
     bg = gfx.sprite.new(),
@@ -28,15 +28,15 @@ function Popup:init(z)
     title = gfx.sprite.new(),
     subtitle = gfx.sprite.new(),
     desc = gfx.sprite.new(),
-    actions = gfx.sprite.new()
+    url = gfx.sprite.new()
   }
   self.spritePositions = {
     bg = { x = -50, y = 0 },
     icon = { x = 56, y = 50 },
-    title = { x = 162, y = 50 },
-    subtitle = { x = 162, y = 72 },
+    title = { x = 162, y = 48 },
+    subtitle = { x = 162, y = 71 },
     desc = { x = 162, y = 96 },
-    actions = { x = 66, y = 150 }
+    url = { x = 57, y = 160 }
   }
 
   -- setup sprite positions once so we don't have to worry about it again
@@ -48,9 +48,9 @@ function Popup:init(z)
   self.sprites.icon:setCenter(0, 0)
   self.sprites.icon:moveTo(self.spritePositions.icon.x + self.startX, self.spritePositions.icon.y + self.startY)
 
-  self.sprites.actions:setZIndex(self.startZ + 2)
-  self.sprites.actions:setCenter(0, 0)
-  self.sprites.actions:moveTo(self.spritePositions.actions.x + self.startX, self.spritePositions.actions.y + self.startY)
+  self.sprites.url:setZIndex(self.startZ + 2)
+  self.sprites.url:setCenter(0, 0)
+  self.sprites.url:moveTo(self.spritePositions.url.x + self.startX, self.spritePositions.url.y + self.startY)
 
   self.sprites.title:setZIndex(self.startZ + 3)
   self.sprites.title:setCenter(0, 0)
@@ -80,14 +80,13 @@ function Popup:draw(data)
   assert(image)
   self.sprites.icon:setImage(image)
 
-  -- actions
-  local actionsImage = gfx.image.new(80, 30)
-  gfx.pushContext(actionsImage)
-    gfx.setFont(self.fonts.actions)
-    gfx.drawText('Ⓐ Close', 0, 0)
-    gfx.drawText('Ⓑ QR Code', 0, 16)
+  -- url
+  local urlImage = gfx.image.new(100, 30)
+  gfx.pushContext(urlImage)
+    gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
+    self.fonts.desc:drawTextAligned(data.url, 44, 0, kTextAlignment.center)
   gfx.popContext()
-  self.sprites.actions:setImage(actionsImage)
+  self.sprites.url:setImage(urlImage)
 
   -- title
   if data.infoTitle or data.title then
@@ -111,7 +110,7 @@ function Popup:draw(data)
 
   -- description
   if data.desc then
-    local descImage = gfx.image.new(192, 80)
+    local descImage = gfx.image.new(192, 100)
     gfx.pushContext(descImage)
       gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
       self.fonts.desc:drawText(data.desc, 0, 0, 3)
@@ -121,14 +120,10 @@ function Popup:draw(data)
 end
 
 function Popup:update()
-  if pd.buttonJustPressed(pd.kButtonA) then
+  if pd.buttonJustPressed(pd.kButtonA) or pd.buttonJustPressed(pd.kButtonB) then
     if (self.visible) then
       self:dismiss()
     end
-  end
-
-  if pd.buttonJustPressed(pd.kButtonB) then
-    print('popup: B pressed')
   end
 end
 
