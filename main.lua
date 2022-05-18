@@ -69,12 +69,7 @@ function startGame()
   -- globally track crank position
   crankTicks = 0
 
-  -- get all sounds in memory
-  sounds = {
-    flip = pd.sound.sampleplayer.new("sounds/flip.wav"),
-    konami = pd.sound.sampleplayer.new("sounds/konami2.wav")
-  }
-  filePlayer = pd.sound.fileplayer.new()
+  filePlayer = pd.sound.fileplayer.new(3)
   soundMeta = {
     match = {
       counter = 1,
@@ -198,15 +193,20 @@ function handleMatch(one, two)
 end
 
 function play(name)
+  print('play', name)
   if not config.sounds then return end
 
   local meta = soundMeta[name]
-  filePlayer:load("sounds/"..name..meta.counter)
-  filePlayer:play()
-  meta.counter += 1
-  if meta.counter > meta.max then
-    meta.counter = 1
+  if meta then
+    filePlayer:load("sounds/"..name..meta.counter)
+    meta.counter += 1
+    if meta.counter > meta.max then
+      meta.counter = 1
+    end
+  else
+    filePlayer:load("sounds/"..name)
   end
+  filePlayer:play()
 end
 
 -- What to do when pressing the A button
@@ -253,9 +253,7 @@ function handleA()
       end
     else
       -- if we're not going to play any other sound, play the card flip
-      if config.sounds then
-        sounds.flip:play()
-      end
+      play("flip")
     end
   end
 end
@@ -296,9 +294,7 @@ function handleCheats()
   if not activate then return end -- buffer didn't match cheat code
 
   CHEATS.konami.activated = true
-  if config.sounds then
-    sounds.konami:play()
-  end
+  play("konami")
   inverted = true
 
   -- reveal the board
@@ -326,13 +322,13 @@ function pd.update()
   -- if the popup is visible, it should start listening for key presses
   popup:update()
 
+  -- check if a secret code has been entered!
+  handleCheats()
+
   -- watch for inputs
   handleA()
   handleB()
   handleD()
-
-  -- check if a secret code has been entered!
-  handleCheats()
 
   -- tell the playdate to do its thing
   gfx.sprite.update()
