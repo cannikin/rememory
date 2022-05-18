@@ -11,8 +11,15 @@ function Card:init(label, xId, yId, xPos, yPos)
   -- so that we only need to update() if a change occurs
   self.side = 'back'
   self.visible = true
+  self.flipFrameCount = 2
 
   self.back = gfx.image.new("images/cards/back")
+  self.flipFrames = {
+    gfx.image.new("images/cards/flip1"),
+    gfx.image.new("images/cards/flip2"),
+    gfx.image.new("images/cards/flip3"),
+    gfx.image.new("images/cards/flip4")
+  }
   self.front = gfx.image.new("images/cards/"..string.lower(self.label))
 
   self:setImage(self.back)
@@ -25,9 +32,37 @@ function Card:update()
 
   if self.side ~= self.lastShow then
     if self.side == 'back' then
-      if inverted then self:setImage(self.front) else self:setImage(self.back) end
+      local timer = pd.frameTimer.new(#self.flipFrames + 1)
+
+      timer.updateCallback = function(timer)
+        if timer.frame == 5 then
+          if inverted then self:setImage(self.front) else self:setImage(self.back) end
+          self:moveTo(self.x, self.y + 5)
+        else
+          self:setImage(self.flipFrames[#self.flipFrames + 1 - timer.frame])
+        end
+      end
+
+      -- flipping cards are a little bigger so move them up to center
+      self:moveTo(self.x, self.y - 5)
     elseif self.side == 'front' then
-      if inverted then self:setImage(self.back) else self:setImage(self.front) end
+      local timer = pd.frameTimer.new((#self.flipFrames + 1) * self.flipFrameCount)
+
+      timer.updateCallback = function(timer)
+        if (timer.frame % self.flipFrameCount == 0) then
+          local step = timer.frame / self.flipFrameCount
+
+          if step == 5 then
+            if inverted then self:setImage(self.back) else self:setImage(self.front) end
+            self:moveTo(self.x, self.y + 5)
+          else
+            self:setImage(self.flipFrames[step])
+          end
+        end
+      end
+
+      -- flipping cards are a little bigger so move them up to center while animating
+      self:moveTo(self.x, self.y - 5)
     end
 
     self.lastShow = self.side

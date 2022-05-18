@@ -1,5 +1,6 @@
 import "CoreLibs/crank"
 import "CoreLibs/easing"
+import "CoreLibs/frameTimer"
 import "CoreLibs/object"
 import "CoreLibs/graphics"
 import "CoreLibs/sprites"
@@ -29,6 +30,9 @@ local CHEATS = {
     activated = false
   }
 }
+
+-- track how many matches were bad, for showing on the end screen
+local mismatchCounter = 0
 
 -- tracks whether cards should have the opposite behavior. if `true`, then
 -- flipping them to their BACK will be considered showing for matches
@@ -62,6 +66,9 @@ function startGame()
 
   -- randomized labels list, one for each card on the board
   cardLabels = concat(shuffle(labels), shuffle(labels))
+
+  -- which cards are showing
+  showing = {}
 
   -- if there's currently a 2-card mismatch showing
   mismatch = false
@@ -175,7 +182,11 @@ function handleMismatch()
      pd.buttonJustPressed(pd.kButtonRight) or
      pd.buttonJustPressed(pd.kButtonA) or
      crankTicks ~= 0 then
-       flipAllCards('back')
+       print(showing)
+       showing[1]:flip('back')
+       pd.timer.performAfterDelay(100, function()
+         showing[2]:flip('back')
+       end)
        mismatch = false
   end
 end
@@ -188,15 +199,13 @@ function handleMatch(one, two)
   end)
 
   pd.timer.performAfterDelay(350, function()
-    -- TODO: animate these leaving the board instead of just disappearing?
-
-    one:remove()
-    pd.timer.performAfterDelay(250, function()
-      two:remove()
-    end)
-
     if config.showDescriptions then
-      popup:show(DATA[one.label])
+      popup:show(DATA[one.label], function()
+        one:remove()
+        pd.timer.performAfterDelay(250, function()
+          two:remove()
+        end)
+      end)
     end
   end)
 end
@@ -228,8 +237,6 @@ function handleA()
       return
     end
 
-    play("flip")
-
     -- flip over the card that's currently selected, if visible
     local selected = selector:which()
     if cards[selected.col][selected.row].visible then
@@ -241,7 +248,7 @@ function handleA()
     end
 
     -- record all cards currently visible
-    local showing = {}
+    showing = {}
     for i=1,board.cols do
       for j=1,board.rows do
         if cards[i][j]:isShowing() then
@@ -257,12 +264,16 @@ function handleA()
       else
         -- not a match :(
         selector:shake('left-right')
+        print('play')
         mismatchSoundIncrement = play("mismatch")
         -- keep track so that when the cursor next moves or button pressed,
         -- we'll know to flip the cards back over
         mismatch = true
+        mismatchCounter += 1
       end
     end
+
+    play("flip")
   end
 end
 
@@ -341,6 +352,7 @@ function pd.update()
   -- tell the playdate to do its thing
   gfx.sprite.update()
   pd.timer.updateTimers()
+  pd.frameTimer.updateTimers()
 end
 
 setupMenu()

@@ -16,6 +16,9 @@ function Popup:init(z)
   self.startY = 0
   self.endY = 0
 
+  -- function to call when dismissed
+  self.dismissCallback = function() end
+
   self.fonts = {
     title = gfx.font.new('fonts/Roobert/Roobert-11-Bold'),
     subtitle = gfx.font.new('fonts/Roobert/Roobert-10-Bold'),
@@ -127,7 +130,9 @@ function Popup:update()
   end
 end
 
-function Popup:show(data)
+-- accepts the data to show in the popup as well as a callback to invoke when
+-- the modal is dismissed
+function Popup:show(data, callback)
   self:draw(data)
 
   for name, sprite in pairs(self.sprites) do
@@ -140,6 +145,10 @@ function Popup:show(data)
       sprite:moveTo(self.spritePositions[name].x + timer.value, sprite.y)
     end
   end
+
+  pd.timer.performAfterDelay(1000, function()
+    self.dismissCallback = callback
+  end)
 
   self.visible = true
 end
@@ -162,6 +171,8 @@ function Popup:dismiss()
     for name, sprite in pairs(self.sprites) do
       sprite:moveTo(self.spritePositions[name].x + self.startX, self.spritePositions[name].y + self.startY)
     end
+
+    self.dismissCallback()
 
     self.visible = false
   end
