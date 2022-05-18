@@ -188,8 +188,12 @@ function handleMatch(one, two)
   end)
 
   pd.timer.performAfterDelay(350, function()
+    -- TODO: animate these leaving the board instead of just disappearing?
+
     one:remove()
-    two:remove()
+    pd.timer.performAfterDelay(250, function()
+      two:remove()
+    end)
 
     if config.showDescriptions then
       popup:show(DATA[one.label])

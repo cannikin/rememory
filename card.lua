@@ -35,8 +35,40 @@ function Card:update()
 end
 
 function Card:remove()
-  self.visible = false
-  Card.super.remove(self)
+  local startX = self.x
+  local startY = self.y
+  local endX = self.x
+  local endY = self.y
+  local removeTimer = nil
+
+  local dir = math.random(4)
+
+  if dir == 1 then     -- top
+    endY = -self.height
+  elseif dir == 2 then -- right
+    endX = 400
+  elseif dir == 3 then -- bottom
+    endY = 240
+  elseif dir == 4 then -- left
+    endX = -self.width
+  end
+
+  if dir % 2 == 0 then -- horizontal
+    removeTimer = pd.timer.new(300, startX, endX, pd.easingFunctions.inBack)
+    removeTimer.updateCallback = function(timer)
+      self:moveTo(timer.value, startY)
+    end
+  else                -- vertical
+    removeTimer = pd.timer.new(300, startY, endY, pd.easingFunctions.inBack)
+    removeTimer.updateCallback = function(timer)
+      self:moveTo(startX, timer.value)
+    end
+  end
+
+  removeTimer.timerEndedCallback = function()
+    self.visible = false
+    Card.super.remove(self)
+  end
 end
 
 function Card:flip(side)
