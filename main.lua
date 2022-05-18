@@ -182,14 +182,19 @@ end
 
 function handleMatch(one, two)
   scoreboard:update(one.label)
-  play("match")
 
-  one:remove()
-  two:remove()
+  pd.timer.performAfterDelay(200, function()
+    play("match")
+  end)
 
-  if config.showDescriptions then
-    popup:show(DATA[one.label])
-  end
+  pd.timer.performAfterDelay(350, function()
+    one:remove()
+    two:remove()
+
+    if config.showDescriptions then
+      popup:show(DATA[one.label])
+    end
+  end)
 end
 
 function play(name)
@@ -218,6 +223,8 @@ function handleA()
     if (popup.visible) then
       return
     end
+
+    play("flip")
 
     -- flip over the card that's currently selected, if visible
     local selected = selector:which()
@@ -251,9 +258,6 @@ function handleA()
         -- we'll know to flip the cards back over
         mismatch = true
       end
-    else
-      -- if we're not going to play any other sound, play the card flip
-      play("flip")
     end
   end
 end
