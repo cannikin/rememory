@@ -11,7 +11,6 @@ function GameOver:init(matches, mismatches)
 
   self.fonts = {
     roobert24 = gfx.font.new('fonts/Roobert/Roobert-20-Medium'),
-    roobert20 = gfx.font.new('fonts/Roobert/Roobert-20-Medium'),
     roobert11 = gfx.font.new('fonts/Roobert/Roobert-11-Bold'),
     roobert10 = gfx.font.new('fonts/Roobert/Roobert-10-Bold'),
     nontendo = gfx.font.new('fonts/Nontendo/Nontendo-Light'),
