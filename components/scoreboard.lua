@@ -1,7 +1,7 @@
 local pd <const> = playdate
 local gfx <const> = pd.graphics
 
-class('Scoreboard').extends(gfx.sprite)
+class('Scoreboard').extends(Object)
 
 function Scoreboard:init(x, y, labels)
   -- scoreboard size and position
