@@ -11,8 +11,8 @@ function Popup:init(z)
   self.timer = nil
 
   -- where to start/stop the animation when flying off the screen
-  self.startX = -450
-  self.endX = 450
+  self.startX = -400
+  self.endX = 400
   self.startY = 0
   self.endY = 0
 
@@ -27,6 +27,7 @@ function Popup:init(z)
   }
   self.sprites = {
     bg = gfx.sprite.new(),
+    window = gfx.sprite.new(),
     icon = gfx.sprite.new(),
     title = gfx.sprite.new(),
     subtitle = gfx.sprite.new(),
@@ -34,7 +35,8 @@ function Popup:init(z)
     url = gfx.sprite.new()
   }
   self.spritePositions = {
-    bg = { x = -50, y = 0 },
+    bg = { x = 0, y = 0 },
+    window = { x = 0, y = 0 },
     icon = { x = 56, y = 50 },
     title = { x = 162, y = 48 },
     subtitle = { x = 162, y = 71 },
@@ -45,43 +47,45 @@ function Popup:init(z)
   -- setup sprite positions once so we don't have to worry about it again
   self.sprites.bg:setZIndex(self.startZ)
   self.sprites.bg:setCenter(0,0)
-  self.sprites.bg:moveTo(self.spritePositions.bg.x + self.startX, self.spritePositions.bg.y + self.startY)
+  self.sprites.bg:moveTo(self.spritePositions.bg.x, self.spritePositions.bg.y)
 
-  self.sprites.icon:setZIndex(self.startZ + 1)
+  self.sprites.window:setZIndex(self.startZ + 1)
+  self.sprites.window:setCenter(0,0)
+  self.sprites.window:moveTo(self.spritePositions.window.x + self.startX, self.spritePositions.window.y + self.startY)
+
+  self.sprites.icon:setZIndex(self.startZ + 2)
   self.sprites.icon:setCenter(0, 0)
   self.sprites.icon:moveTo(self.spritePositions.icon.x + self.startX, self.spritePositions.icon.y + self.startY)
 
-  self.sprites.url:setZIndex(self.startZ + 2)
+  self.sprites.url:setZIndex(self.startZ + 3)
   self.sprites.url:setCenter(0, 0)
   self.sprites.url:moveTo(self.spritePositions.url.x + self.startX, self.spritePositions.url.y + self.startY)
 
-  self.sprites.title:setZIndex(self.startZ + 3)
+  self.sprites.title:setZIndex(self.startZ + 4)
   self.sprites.title:setCenter(0, 0)
   self.sprites.title:moveTo(self.spritePositions.title.x + self.startX, self.spritePositions.title.y + self.startY)
 
-  self.sprites.subtitle:setZIndex(self.startZ + 4)
+  self.sprites.subtitle:setZIndex(self.startZ + 5)
   self.sprites.subtitle:setCenter(0, 0)
   self.sprites.subtitle:moveTo(self.spritePositions.subtitle.x + self.startX, self.spritePositions.subtitle.y + self.startY)
 
-  self.sprites.desc:setZIndex(self.startZ + 5)
+  self.sprites.desc:setZIndex(self.startZ + 6)
   self.sprites.desc:setCenter(0, 0)
   self.sprites.desc:moveTo(self.spritePositions.desc.x + self.startX, self.spritePositions.desc.y + self.startY)
-
-  self:drawBackground()
 end
 
-function Popup:drawBackground()
-  local image <const> = gfx.image.new("images/popup")
-  assert(image)
+function Popup:draw(data, blurred)
 
-  self.sprites.bg:setImage(image)
-end
+  -- bg
+  self.sprites.bg:setImage(blurred)
 
-function Popup:draw(data)
+  -- window
+  local window <const> = gfx.image.new("images/popup")
+  self.sprites.window:setImage(window)
+
   -- icon
-  local image <const> = gfx.image.new("images/popups/"..string.lower(data.title))
-  assert(image)
-  self.sprites.icon:setImage(image)
+  local icon <const> = gfx.image.new("images/popups/"..string.lower(data.title))
+  self.sprites.icon:setImage(icon)
 
   -- url
   local urlImage = gfx.image.new(100, 30)
@@ -135,7 +139,10 @@ end
 function Popup:show(data, callback)
   self.dismissCallback = callback
 
-  self:draw(data)
+  local screen = gfx.getDisplayImage()
+  local blurred = screen:blurredImage(2, 1, gfx.image.kDitherTypeDiagonalLine, false)
+
+  self:draw(data, blurred)
 
   -- add sprites to render stack
   for name, sprite in pairs(self.sprites) do
@@ -143,10 +150,12 @@ function Popup:show(data, callback)
   end
 
   -- animate popup flying in
-  self.timer = pd.timer.new(800, -450, 0, pd.easingFunctions.outBack)
+  self.timer = pd.timer.new(800, -400, 0, pd.easingFunctions.outBack)
   self.timer.updateCallback = function(timer)
     for name, sprite in pairs(self.sprites) do
-      sprite:moveTo(self.spritePositions[name].x + timer.value, sprite.y)
+      if name ~= 'bg' then
+        sprite:moveTo(self.spritePositions[name].x + timer.value, sprite.y)
+      end
     end
   end
 
@@ -157,7 +166,9 @@ function Popup:dismiss()
   self.timer = pd.timer.new(400, 0, 400, pd.easingFunctions.inBack)
   self.timer.updateCallback = function(timer)
     for name, sprite in pairs(self.sprites) do
-      sprite:moveTo(self.spritePositions[name].x + timer.value, sprite.y)
+      if name ~= 'bg' then
+        sprite:moveTo(self.spritePositions[name].x + timer.value, sprite.y)
+      end
     end
   end
 
@@ -169,7 +180,9 @@ function Popup:dismiss()
 
     -- get sprites back over to the left side
     for name, sprite in pairs(self.sprites) do
-      sprite:moveTo(self.spritePositions[name].x + self.startX, self.spritePositions[name].y + self.startY)
+      if name ~= 'bg' then
+        sprite:moveTo(self.spritePositions[name].x + self.startX, self.spritePositions[name].y + self.startY)
+      end
     end
 
     self.dismissCallback()
