@@ -24,6 +24,14 @@ end
 local DATA_INDEX <const> = { "react", "graphql", "prisma", "typescript", "jest", "storybook", "webpack", "babel", "auth0", "supabase", "netlify", "vercel" }
 local DATA <const> = json.decodeFile("cards.json")
 
+CARD_BACK = gfx.image.new("images/cards/back")
+CARD_FLIP_FRAMES = {
+  gfx.image.new("images/cards/flip1"),
+  gfx.image.new("images/cards/flip2"),
+  gfx.image.new("images/cards/flip3"),
+  gfx.image.new("images/cards/flip4")
+}
+
 function setupMenu()
   local menu <const> = pd.getSystemMenu()
   menu:addCheckmarkMenuItem('info cards', config.showDescriptions, function(value)
@@ -40,6 +48,9 @@ function setupMenu()
 end
 
 function startGame()
+  -- so we can track how long you've been playing for by the end of the game
+  playdate.resetElapsedTime()
+
   -- size of the board
   board = { cols = 6, rows = 4, gap = 8}
 
