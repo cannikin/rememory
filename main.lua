@@ -24,20 +24,6 @@ end
 local DATA_INDEX <const> = { "react", "graphql", "prisma", "typescript", "jest", "storybook", "webpack", "babel", "auth0", "supabase", "netlify", "vercel" }
 local DATA <const> = json.decodeFile("cards.json")
 
-local CHEATS = {
-  konami = {
-    keys = { 'u', 'u', 'd', 'd', 'l', 'r', 'l', 'r', 'b', 'a' },
-    activated = false
-  }
-}
-
--- track how many matches were bad, for showing on the end screen
-local mismatchCounter = 0
-
--- tracks whether cards should have the opposite behavior. if `true`, then
--- flipping them to their BACK will be considered showing for matches
-inverted = false
-
 function setupMenu()
   local menu <const> = pd.getSystemMenu()
   menu:addCheckmarkMenuItem('info cards', config.showDescriptions, function(value)
@@ -88,8 +74,22 @@ function startGame()
     }
   }
 
+  -- track how many matches were bad, for showing on the end screen
+  mismatchCounter = 0
+
+  -- tracks whether cards should have the opposite behavior. if `true`, then
+  -- flipping them to their BACK will be considered showing for matches
+  inverted = false
+
   -- track the most recent sequence of keys pressed, for secrets!
   keyBuffer = {}
+
+  CHEATS = {
+    konami = {
+      keys = { 'u', 'u', 'd', 'd', 'l', 'r', 'l', 'r', 'b', 'a' },
+      activated = false
+    }
+  }
 
   cards = setupBoard()
   selector = setupSelector()
