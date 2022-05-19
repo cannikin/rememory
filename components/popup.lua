@@ -1,7 +1,7 @@
 local pd <const> = playdate
 local gfx <const> = pd.graphics
 
-class('Popup').extends(gfx.sprite)
+class('Popup').extends(Object)
 
 function Popup:init(z)
   self.visible = false
