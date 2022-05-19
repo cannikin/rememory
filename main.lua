@@ -353,5 +353,3 @@ end
 
 setupMenu()
 startGame()
-
--- popup:show(DATA.graphql)
