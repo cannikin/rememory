@@ -186,17 +186,22 @@ function handleMismatch()
      pd.buttonJustPressed(pd.kButtonRight) or
      pd.buttonJustPressed(pd.kButtonA) or
      crankTicks ~= 0 then
-       -- record these locally so that if the user is clicking around fast and
+       -- track these locally so that if the user is clicking around fast and
        -- resets what's showing, we don't lose the reference that these two
-       -- were pointing at
-       local flipBack = { showing[1], showing[2] }
+       -- were pointing at inside the timer
+       local secondFlip = showing[2]
 
-       flipBack[1]:flip('back')
+       showing[1]:flip('back')
        pd.timer.performAfterDelay(100, function()
-         flipBack[2]:flip('back')
+         secondFlip:flip('back')
        end)
 
        mismatch = false
+
+       -- reset what cards are tracked as showing so that if someone clicks
+       -- around before the outgoing animation is done, it doesn't think there
+       -- are two cards on the screen still
+       showing = {}
   end
 end
 
