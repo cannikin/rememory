@@ -190,11 +190,8 @@ end
 function handleMatch(one, two)
   scoreboard:update(one.label)
 
-  pd.timer.performAfterDelay(200, function()
-    play("match")
-  end)
-
   pd.timer.performAfterDelay(350, function()
+    play("match")
     if config.showDescriptions then
       popup:show(DATA[one.label], function()
         one:remove()
@@ -207,7 +204,6 @@ function handleMatch(one, two)
 end
 
 function play(name)
-  print('play', name)
   if not config.sounds then return end
 
   -- filePlayer can only play one thing at a time so make sure nothing else is
@@ -263,8 +259,9 @@ function handleA()
       else
         -- not a match :(
         selector:shake('left-right')
-        print('play')
-        mismatchSoundIncrement = play("mismatch")
+        pd.timer.performAfterDelay(400, function()
+          mismatchSoundIncrement = play("mismatch")
+        end)
         -- keep track so that when the cursor next moves or button pressed,
         -- we'll know to flip the cards back over
         mismatch = true
