@@ -109,13 +109,10 @@ end
 function Card:flip(side)
   if (self.visible) then
     if side then
-      print('set', side)
       self.side = side
     elseif self.side == 'back' then
-      print('guessed front')
       self.side = 'front'
     else
-      print('guessed back')
       self.side = 'back'
     end
   end

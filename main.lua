@@ -6,11 +6,11 @@ import "CoreLibs/graphics"
 import "CoreLibs/sprites"
 import "CoreLibs/timer"
 
-import "utility"
-import "card"
-import "select"
-import "scoreboard"
-import "popup"
+import "components/card"
+import "components/select"
+import "components/scoreboard"
+import "components/popup"
+import "lib/utility"
 
 local pd <const> = playdate
 local gfx <const> = pd.graphics
