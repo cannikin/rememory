@@ -55,7 +55,7 @@
     "url": "supabase.com"
   },
   "typescript": {
-    "desc": "Redwood is completely typed,\n front and backend. It watches\nyour schema and GraphQL\ndefinitions for changes,\ngenerating types on the fly.",
+    "desc": "Redwood is completely typed,\nfront and backend. It watches\nyour schema and GraphQL\ndefinitions for changes,\ngenerating types on the fly.",
     "subtitle": "JavaScript + Types",
     "title": "TypeScript",
     "url": "typescriptlang.org"
