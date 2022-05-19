@@ -152,15 +152,6 @@ function setupSelector()
   return Select(options)
 end
 
--- flips all cards to either their front or back sides
-function flipAllCards(side)
-  for i=1,board.cols do
-    for j=1,board.rows do
-      cards[i][j]:flip(side)
-    end
-  end
-end
-
 -- records a key press, only tracking the last 10 keys
 function recordKey(key)
   table.insert(keyBuffer, #keyBuffer + 1, key)
