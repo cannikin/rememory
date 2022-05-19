@@ -10,7 +10,7 @@ function GameOver:init(matches, mismatches)
   self.mismatches = mismatches
 
   self.fonts = {
-    roobert24 = gfx.font.new('fonts/Roobert/Roobert-20-Medium'),
+    roobert24 = gfx.font.new('fonts/Roobert/Roobert-24-Medium'),
     roobert11 = gfx.font.new('fonts/Roobert/Roobert-11-Bold'),
     roobert10 = gfx.font.new('fonts/Roobert/Roobert-10-Bold'),
     nontendo = gfx.font.new('fonts/Nontendo/Nontendo-Light'),
@@ -25,7 +25,7 @@ function GameOver:init(matches, mismatches)
   }
   self.spritePositions = {
     bg = { x = 8, y = 8 },
-    title = { x = 0, y = 30 },
+    title = { x = 0, y = 24 },
     stats = { x = 0, y = 70 },
     substats = { x = 0, y = 106 },
     again = { x = 0, y = 136 },
