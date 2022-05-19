@@ -7,6 +7,7 @@ import "CoreLibs/sprites"
 import "CoreLibs/timer"
 
 import "components/card"
+import "components/gameOver"
 import "components/select"
 import "components/scoreboard"
 import "components/popup"
@@ -106,6 +107,7 @@ function startGame()
   selector = setupSelector()
   scoreboard = Scoreboard(302, 0, titles)
   popup = Popup(30)
+  gameOver = GameOver()
 end
 
 -- removes any existing sprites from the stack so they can get redrawn from scratch
@@ -203,15 +205,47 @@ function handleMatch(one, two)
 
   pd.timer.performAfterDelay(350, function()
     play("match")
+
     if config.showDescriptions then
+      -- have the popup remove the matches once it's dismissed
       popup:show(DATA[one.label], function()
-        one:remove()
-        pd.timer.performAfterDelay(250, function()
-          two:remove()
-        end)
+        removeMatch(one, two)
       end)
+    else
+      -- remove them ourselves
+      removeMatch(one, two)
     end
   end)
+end
+
+function removeMatch(one, two)
+  one:remove()
+  pd.timer.performAfterDelay(250, function()
+    two:remove()
+
+    -- give the last card a chance to animate off the screen before
+    -- show Game Over screen
+    pd.timer.performAfterDelay(500, function()
+      handleGameOver()
+    end)
+  end)
+end
+
+function handleGameOver()
+  print(#cards, "cards")
+  local done = true
+  for i=1,board.cols do
+    for j=1,board.rows do
+      if cards[i][j].visible then
+        done = false
+        break
+      end
+    end
+  end
+  if done then
+    selector:remove()
+    gameOver:show(board.rows * board.cols / 2, mismatchCounter)
+  end
 end
 
 function play(name)
@@ -347,6 +381,7 @@ function pd.update()
 
   -- if the popup is visible, it should start listening for key presses
   popup:update()
+  gameOver:update()
 
   -- check if a secret code has been entered!
   handleCheats()

@@ -133,22 +133,22 @@ end
 -- accepts the data to show in the popup as well as a callback to invoke when
 -- the modal is dismissed
 function Popup:show(data, callback)
+  self.dismissCallback = callback
+
   self:draw(data)
 
+  -- add sprites to render stack
   for name, sprite in pairs(self.sprites) do
     self.sprites[name]:add()
   end
 
+  -- animate popup flying in
   self.timer = pd.timer.new(800, -450, 0, pd.easingFunctions.outBack)
   self.timer.updateCallback = function(timer)
     for name, sprite in pairs(self.sprites) do
       sprite:moveTo(self.spritePositions[name].x + timer.value, sprite.y)
     end
   end
-
-  pd.timer.performAfterDelay(1000, function()
-    self.dismissCallback = callback
-  end)
 
   self.visible = true
 end
