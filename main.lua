@@ -173,11 +173,16 @@ function handleMismatch()
      pd.buttonJustPressed(pd.kButtonRight) or
      pd.buttonJustPressed(pd.kButtonA) or
      crankTicks ~= 0 then
-       print(showing)
-       showing[1]:flip('back')
+       -- record these locally so that if the user is clicking around fast and
+       -- resets what's showing, we don't lose the reference that these two
+       -- were pointing at
+       local flipBack = { showing[1], showing[2] }
+
+       flipBack[1]:flip('back')
        pd.timer.performAfterDelay(100, function()
-         showing[2]:flip('back')
+         flipBack[2]:flip('back')
        end)
+
        mismatch = false
   end
 end
