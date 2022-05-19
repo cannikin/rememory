@@ -205,6 +205,9 @@ function play(name)
   print('play', name)
   if not config.sounds then return end
 
+  -- filePlayer can only play one thing at a time so make sure nothing else is
+  filePlayer:stop()
+
   local meta = soundMeta[name]
   if meta then
     filePlayer:load("sounds/"..name..meta.counter)
