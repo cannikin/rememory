@@ -94,29 +94,30 @@ function GameOver:draw(matches, mismatches)
 
   -- stats
   local time = pd.getElapsedTime()
-  local minutes = math.floor(time / 60)
 
-  local minuteText = "minutes"
-  if minutes == 1 then
-    minuteText = "minute"
-  end
+  local minutes = math.floor(time / 60)
+  local minutesText = "minutes"
+  if minutes == 1 then minutesText = "minute" end
 
   local seconds = math.floor(time - minutes * 60)
-  local secondText = "seconds"
-  if seconds == 1 then
-    secondText = "second"
-  end
+  local secondsText = "seconds"
+  if seconds == 1 then secondsText = "second" end
 
-  local text = "You found "..math.floor(matches).." matches in \n"..minutes.." minutes and "..seconds.." seconds"
+  local pairsText = "pairs"
+  if mismatches == 1 then pairsText = "pair" end
+
+  local matchText = "You found "..math.floor(matches).." matches in \n"..minutes.." "..minutesText.." and "..seconds.." "..secondsText
+  local mismatchText = "(and found "..mismatches.." mismatched "..pairsText..")"
+
   local statsImage = gfx.image.new(286, 40)
   gfx.pushContext(statsImage)
-    self.fonts.roobert10:drawTextAligned(text, statsImage.width/2, 0, kTextAlignment.center)
+    self.fonts.roobert10:drawTextAligned(matchText, statsImage.width/2, 0, kTextAlignment.center)
   gfx.popContext()
   self.sprites.stats:setImage(statsImage)
 
   local substatsImage = gfx.image.new(286, 40)
   gfx.pushContext(substatsImage)
-    self.fonts.nontendo:drawTextAligned("(and found "..mismatches.." mismatched pairs)", substatsImage.width/2, 0, kTextAlignment.center)
+    self.fonts.nontendo:drawTextAligned(mismatchText, substatsImage.width/2, 0, kTextAlignment.center)
   gfx.popContext()
   self.sprites.substats:setImage(substatsImage)
 
