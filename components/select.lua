@@ -8,7 +8,10 @@ function Select:init(options)
   self.rows = options.rows
   self.colWidth = options.colWidth
   self.rowHeight = options.rowHeight
-  self.gap = options.gap
+  self.xGap = options.xGap
+  self.yGap = options.yGap
+  self.xMargin = options.xMargin
+  self.yMargin = options.yMargin
 
   -- keep track of which col/row is currently selected
   self.selected = {}
@@ -185,9 +188,9 @@ function Select:moveSelection()
 
   -- figure out what the final destination of the selector will be
   self.movingTo.x = self.colWidth * (self.selected.col - 1)
-  self.movingTo.x += self.gap * self.selected.col - (self.width - self.colWidth) / 2
+  self.movingTo.x += self.xGap * self.selected.col - (self.width - self.colWidth) / 2 + self.xMargin
   self.movingTo.y = self.rowHeight * (self.selected.row - 1)
-  self.movingTo.y += self.gap * self.selected.row - (self.height - self.rowHeight) / 2
+  self.movingTo.y += self.yGap * self.selected.row - (self.height - self.rowHeight) / 2 + self.yMargin
 
   -- don't bother with the rest of this if we're not actually moving
   if self.x == self.movingTo.x and self.y == self.movingTo.y then

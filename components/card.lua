@@ -30,14 +30,10 @@ function Card:update()
       timer.updateCallback = function(timer)
         if timer.frame == 5 then
           if inverted then self:setImage(self.front) else self:setImage(CARD_BACK) end
-          self:moveTo(self.x, self.y + 5)
         else
           self:setImage(CARD_FLIP_FRAMES[#CARD_FLIP_FRAMES + 1 - timer.frame])
         end
       end
-
-      -- flipping cards are a little bigger so move them up to center
-      self:moveTo(self.x, self.y - 5)
     elseif self.side == 'front' then
       local timer = pd.frameTimer.new((#CARD_FLIP_FRAMES + 1) * self.flipAnimationFrames)
 
@@ -47,15 +43,11 @@ function Card:update()
 
           if step == 5 then
             if inverted then self:setImage(CARD_BACK) else self:setImage(self.front) end
-            self:moveTo(self.x, self.y + 5)
           else
             self:setImage(CARD_FLIP_FRAMES[step])
           end
         end
       end
-
-      -- flipping cards are a little bigger so move them up to center while animating
-      self:moveTo(self.x, self.y - 5)
     end
 
     self.lastShow = self.side

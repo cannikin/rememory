@@ -52,7 +52,7 @@ function startGame()
   playdate.resetElapsedTime()
 
   -- size of the board
-  board = { cols = 6, rows = 4, gap = 8}
+  board = { cols = 6, rows = 4, xGap = 8, yGap = -2, xMargin = 0, yMargin = 5 }
 
   -- get all data keys and randomize
   local allKeys = {}
@@ -146,8 +146,8 @@ function setupBoard()
     cards[i] = {}
     for j=1,board.rows do
       local cardNumber = i + ((j - 1) * board.cols)
-      local spawnX = card.width * (i - 1) + (board.gap * i)
-      local spawnY = card.height * (j - 1) + (board.gap * j)
+      local spawnX = card.width * (i - 1) + (board.xGap * i) + board.xMargin
+      local spawnY = card.height * (j - 1) + (board.yGap * j) + board.yMargin
       cards[i][j] = Card(cardLabels[cardNumber], i, j, spawnX, spawnY)
       cards[i][j]:add()
     end
@@ -166,7 +166,10 @@ function setupSelector()
     rows = board.rows,
     colWidth = card.width,
     rowHeight = card.height,
-    gap = board.gap,
+    xGap = board.xGap,
+    yGap = board.yGap,
+    xMargin = board.xMargin,
+    yMargin = board.yMargin,
     startX = 5,
     startY = 5
   }
@@ -414,5 +417,5 @@ setupMenu()
 startGame()
 
 -- pd.timer.performAfterDelay(200, function()
---   popup:show(DATA['serverless'], function() end)
+--   popup:show(DATA['dbauth'], function() end)
 -- end)
