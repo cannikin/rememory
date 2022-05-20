@@ -414,6 +414,6 @@ end
 setupMenu()
 startGame()
 
-pd.timer.performAfterDelay(200, function()
-  popup:show(DATA['serverless'], function() end)
-end)
+-- pd.timer.performAfterDelay(200, function()
+--   popup:show(DATA['serverless'], function() end)
+-- end)
