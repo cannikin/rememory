@@ -11,6 +11,43 @@
     "title": "Babel",
     "url": "babeljs.io"
   },
+  "baremetal": {
+    "desc": "Deploy to your own servers however\nwant with Redwood's built in\nBaremetal deploy option! Who needs\nthe cloud when you've got BIG IRON\nserving your app? Faster response\ntimes and more control.",
+    "subtitle": "Deploy Engine",
+    "title": "Baremetal",
+    "url": "redwoodjs.com"
+  },
+  "clerk": {
+    "desc": "Clerk does authentication",
+    "subtitle": "Authentication",
+    "title": "Clerk",
+    "url": "clerk.dev"
+  },
+  "dbauth": {
+    "desc": "Redwood's own self-hosted auth\noption that provides signup, login, and\nforgot password flows. Keep your\nuser data in your own database and\nstyle your UI however you want.",
+    "subtitle": "Self-hosted Authentication",
+    "title": "dbAuth",
+    "url": "redwoodjs.com"
+  },
+  "firebase": {
+    "desc": "Firebase hosts your site and provides a DB...",
+    "subtitle": "Hosting Provider",
+    "title": "Firebase",
+    "url": "firebase.com"
+  },
+  "flightcontrol": {
+    "desc": "Host your app on autopilot...",
+    "subtitle": "Hosting Provider",
+    "title": "Flightcontrol",
+    "url": "flightcontrol.dev"
+  },
+  "fly": {
+    "desc": "Host your app on autopilot...",
+    "icon": "fly",
+    "subtitle": "Hosting Provider",
+    "title": "Fly.io",
+    "url": "fly.io"
+  },
   "graphql": {
     "desc": "Fully featured, performant and\nextendable GraphQL JS server.\nRedwood automatically creates\nresolvers from plain JS functions\nmaking your business logic\nshareable across your backend.",
     "infoTitle": "GraphQL Yoga",
@@ -24,15 +61,33 @@
     "title": "Jest",
     "url": "jestjs.io"
   },
+  "layer0": {
+    "desc": "Layer0 provides hosting...",
+    "subtitle": "Hosting Provider",
+    "title": "Layer0",
+    "url": "layer0.co"
+  },
   "netlify": {
     "desc": "Distribute your frontend across\nNetlify's custom CDN, run your GraphQL\nendpoint and custom functions\nwith AWS Lambda, and get access to\nadditional features like background\nworkers, forms, analytics, and more.",
     "subtitle": "Build & Deploy",
     "title": "Netlify",
     "url": "netlify.com"
   },
+  "nhost": {
+    "desc": "Nhost provides a serverless backend...",
+    "subtitle": "Hosting Provider",
+    "title": "Nhost",
+    "url": "nhost.io"
+  },
+  "planetscale": {
+    "desc": "Host your app on autopilot...",
+    "subtitle": "Database Provider",
+    "title": "PlanetScale",
+    "url": "planetscale.com"
+  },
   "prisma": {
     "desc": "Supporting SQLite, PostgreSQL\nMySQL, SQL Server, MongoDB\nand CockroachDB, this flexible\nORM also helps manage your schema\nwith versioned migrations.",
-    "subtitle": "Database Access and ORM",
+    "subtitle": "Database Access & ORM",
     "title": "Prisma",
     "url": "prisma.io"
   },
@@ -41,6 +96,18 @@
     "subtitle": "Frontend Rendering",
     "title": "React",
     "url": "reactjs.org"
+  },
+  "render": {
+    "desc": "The world's most popular rendering\nengine powers Redwood's web\nfrontend. And just wait until you\nyou try Redwood's router.",
+    "subtitle": "Hosting Provider",
+    "title": "Render",
+    "url": "render.com"
+  },
+  "serverless": {
+    "desc": "Deploy to your own cloud host, but controlled by Serverless.",
+    "subtitle": "Deploy Orchestration",
+    "title": "Serverless",
+    "url": "serverless.com"
   },
   "storybook": {
     "desc": "Build your UI in isolation and easily\nview and catalog your components\nin every possible state. You'll end\nup with a comprehensive design\nreference for free!",
