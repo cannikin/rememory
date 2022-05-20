@@ -22,8 +22,7 @@ if not config then
   pd.datastore.write(config)
 end
 
-local DATA_INDEX <const> = { "react", "graphql", "prisma", "typescript", "jest", "storybook", "webpack", "babel", "auth0", "supabase", "netlify", "vercel" }
-local DATA <const> = json.decodeFile("cards.json")
+DATA = json.decodeFile("cards.json")
 
 CARD_BACK = gfx.image.new("images/cards/back")
 CARD_FLIP_FRAMES = {
@@ -55,15 +54,25 @@ function startGame()
   -- size of the board
   board = { cols = 6, rows = 4, gap = 8}
 
-  local labels = {}
+  -- get all data keys and randomize
+  local allKeys = {}
+  for key, data in pairs(DATA) do
+    table.insert(allKeys, #allKeys + 1, key)
+  end
+  local randomKeys = shuffle(allKeys)
+
+  -- keys to find card info in DATA
+  local keys = {}
+  -- used to show list of matches in scoreboard
   local titles = {}
-  for _, label in ipairs(DATA_INDEX) do
-    table.insert(labels, #labels + 1, label)
-    table.insert(titles, #titles + 1, DATA[label].title)
+  for i, key in ipairs(randomKeys) do
+    table.insert(keys, #keys + 1, key)
+    table.insert(titles, #titles + 1, DATA[key].title)
+    if i == 12 then break end
   end
 
   -- randomized labels list, one for each card on the board
-  cardLabels = concat(shuffle(labels), shuffle(labels))
+  cardLabels = concat(shuffle(keys), shuffle(keys))
 
   -- which cards are showing
   showing = {}
@@ -404,3 +413,7 @@ end
 
 setupMenu()
 startGame()
+
+pd.timer.performAfterDelay(200, function()
+  popup:show(DATA['serverless'], function() end)
+end)
