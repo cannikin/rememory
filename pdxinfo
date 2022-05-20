@@ -1,8 +1,8 @@
-name=RedwoodJS Memory
+name=Rememory: RedwoodJS Ed.
 author=Rob Cameron
-description=A simple game of memory to teach you about RedwoodJS partners and features
+description=A simple game of memory to teach you about RedwoodJS features and integration partners
 bundleID=com.camerontech.redwood-memory
-version=0.1
-buildNumber=2
+version=1.0
+buildNumber=3
 imagePath=images/pdxinfo
 launchSoundPath=sounds/pdxinfo
