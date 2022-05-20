@@ -246,7 +246,6 @@ function removeMatch(one, two)
 end
 
 function handleGameOver()
-  print(#cards, "cards")
   local done = true
   for i=1,board.cols do
     for j=1,board.rows do
