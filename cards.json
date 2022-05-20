@@ -15,7 +15,7 @@
     "desc": "Deploy to your own servers however\nwant with Redwood's built in\nBaremetal deploy option! Who needs\nthe cloud when you've got BIG IRON\nserving your app? Faster response\ntimes and more control.",
     "subtitle": "Deploy Engine",
     "title": "Baremetal",
-    "url": "redwoodjs.com"
+    "url": "redwoodjs.com/\nbaremetal"
   },
   "clerk": {
     "desc": "Clerk does authentication",
@@ -27,7 +27,7 @@
     "desc": "Redwood's own self-hosted auth\noption that provides signup, login, and\nforgot password flows. Keep your\nuser data in your own database and\nstyle your UI however you want.",
     "subtitle": "Self-hosted Authentication",
     "title": "dbAuth",
-    "url": "redwoodjs.com"
+    "url": "redwoodjs.com/\ndbauth"
   },
   "firebase": {
     "desc": "Firebase hosts your site and provides a DB...",
@@ -98,13 +98,13 @@
     "url": "reactjs.org"
   },
   "render": {
-    "desc": "The world's most popular rendering\nengine powers Redwood's web\nfrontend. And just wait until you\nyou try Redwood's router.",
+    "desc": "Lorem ipsum dolar sit amet...",
     "subtitle": "Hosting Provider",
     "title": "Render",
     "url": "render.com"
   },
   "serverless": {
-    "desc": "Deploy to your own cloud host, but controlled by Serverless.",
+    "desc": "Deploy to your own cloud host, but\norchestrated by Serverless's CLI\ntools. Define your infrastructure in\ncode, Serverless handles starting\nand connecting services and scaling\nthem as needed.",
     "subtitle": "Deploy Orchestration",
     "title": "Serverless",
     "url": "serverless.com"
@@ -128,7 +128,7 @@
     "url": "typescriptlang.org"
   },
   "vercel": {
-    "desc": "Vercel features a global edge network\nand extensive support for SSR.",
+    "desc": "Lorem ipsum dolar sit amet...",
     "subtitle": "Build & Deploy",
     "title": "Vercel",
     "url": "vercel.com"
