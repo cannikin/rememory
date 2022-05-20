@@ -84,7 +84,7 @@ function Popup:draw(data, blurred)
   self.sprites.window:setImage(window)
 
   -- icon
-  local icon <const> = gfx.image.new("images/popups/"..string.lower(data.title))
+  local icon <const> = gfx.image.new("images/popups/"..(data.icon or string.lower(data.title)))
   self.sprites.icon:setImage(icon)
 
   -- url
