@@ -85,13 +85,17 @@ function startGame()
 
   filePlayer = pd.sound.fileplayer.new(3)
   soundMeta = {
+    flip = {
+      counter = 1,
+      max = 2
+    },
     match = {
       counter = 1,
-      max = 6
+      max = 8
     },
     mismatch = {
       counter = 1,
-      max = 8
+      max = 7
     }
   }
 
@@ -261,6 +265,7 @@ function handleGameOver()
   if done then
     selector:remove()
     gameOver:show(board.rows * board.cols / 2, mismatchCounter)
+    play("gameover")
   end
 end
 
@@ -417,5 +422,5 @@ setupMenu()
 startGame()
 
 -- pd.timer.performAfterDelay(200, function()
---   popup:show(DATA['dbauth'], function() end)
+--   popup:show(DATA['flightcontrol'], function() end)
 -- end)
