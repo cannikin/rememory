@@ -36,8 +36,8 @@
     "url": "firebase.com"
   },
   "flightcontrol": {
-    "desc": "Host your app on autopilot...",
-    "subtitle": "Hosting Provider",
+    "desc": "Flightcontrol provides an easy\ngit-push deploy experience on your\nown AWS account. Deploy your \nfrontend, backend, and DB all\ntogether with incredible DX\nand performance.",
+    "subtitle": "Fullstack Hosting",
     "title": "Flightcontrol",
     "url": "flightcontrol.dev"
   },
