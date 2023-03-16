@@ -1,8 +1,7 @@
-name=Rememory-RedwoodJS Edition
+name=Rememory
 author=Rob Cameron
-description=A simple game of memory to teach you about RedwoodJS features and integration partners
-bundleID=com.camerontech.redwood-memory
-version=1.0
-buildNumber=3
-imagePath=images/pdxinfo
-launchSoundPath=sounds/pdxinfo
+description=A simple game of memory
+bundleID=com.camerontech.rememory
+version=1.0.0
+buildNumber=1
+imagePath=images/playdate
