@@ -9,7 +9,6 @@ import "CoreLibs/timer"
 import "components/card"
 import "components/gameOver"
 import "components/select"
-import "components/scoreboard"
 import "components/popup"
 import "lib/utility"
 
@@ -18,11 +17,11 @@ local gfx <const> = pd.graphics
 
 local config = pd.datastore.read()
 if not config then
-  config = { showDescriptions = true, sounds = true }
+  config = { sounds = true }
   pd.datastore.write(config)
 end
 
-DATA = json.decodeFile("cards.json")
+DATA = json.decodeFile(pd.file.open("cards.json"))
 
 CARD_BACK = gfx.image.new("images/cards/back")
 CARD_FLIP_FRAMES = {
@@ -34,10 +33,6 @@ CARD_FLIP_FRAMES = {
 
 function setupMenu()
   local menu <const> = pd.getSystemMenu()
-  menu:addCheckmarkMenuItem('info cards', config.showDescriptions, function(value)
-    config.showDescriptions = value
-    pd.datastore.write(config)
-  end)
   menu:addCheckmarkMenuItem('sounds', config.sounds, function(value)
     config.sounds = value
     pd.datastore.write(config)
@@ -52,7 +47,7 @@ function startGame()
   playdate.resetElapsedTime()
 
   -- size of the board
-  board = { cols = 6, rows = 4, xGap = 8, yGap = -2, xMargin = 0, yMargin = 5 }
+  board = { cols = 8, rows = 4, xGap = 8, yGap = -2, xMargin = 0, yMargin = 5 }
 
   -- get all data keys and randomize
   local allKeys = {}
@@ -60,15 +55,15 @@ function startGame()
     table.insert(allKeys, #allKeys + 1, key)
   end
   local randomKeys = shuffle(allKeys)
+  printTable(randomKeys)
 
   -- keys to find card info in DATA
   local keys = {}
-  -- used to show list of matches in scoreboard
-  local titles = {}
   for i, key in ipairs(randomKeys) do
     table.insert(keys, #keys + 1, key)
-    table.insert(titles, #titles + 1, DATA[key].title)
-    if i == 12 then break end
+    -- we only need as many as there are cards on the board (divided by 2 since
+    -- each card is a pair)
+    if i == board.cols * board.rows / 2 then break end
   end
 
   -- randomized labels list, one for each card on the board
@@ -118,7 +113,6 @@ function startGame()
 
   cards = setupBoard()
   selector = setupSelector()
-  scoreboard = Scoreboard(302, 0, titles)
   popup = Popup(30)
   gameOver = GameOver()
 end
@@ -150,6 +144,7 @@ function setupBoard()
     cards[i] = {}
     for j=1,board.rows do
       local cardNumber = i + ((j - 1) * board.cols)
+      print(i, j, cardNumber)
       local spawnX = card.width * (i - 1) + (board.xGap * i) + board.xMargin
       local spawnY = card.height * (j - 1) + (board.yGap * j) + board.yMargin
       cards[i][j] = Card(cardLabels[cardNumber], i, j, spawnX, spawnY)
@@ -217,6 +212,8 @@ function handleMismatch()
        -- reset what cards are tracked as showing so that if someone clicks
        -- around before the outgoing animation is done, it doesn't think there
        -- are two cards on the screen still
+
+       -- TODO I bet there's a bug here where secondFlip is a reference and is set to nothing when this happens, making it so the second card can't be turned back over
        showing = {}
   end
 end
@@ -226,16 +223,7 @@ function handleMatch(one, two)
 
   pd.timer.performAfterDelay(350, function()
     play("match")
-
-    if config.showDescriptions then
-      -- have the popup remove the matches once it's dismissed
-      popup:show(DATA[one.label], function()
-        removeMatch(one, two)
-      end)
-    else
-      -- remove them ourselves
-      removeMatch(one, two)
-    end
+    removeMatch(one, two)
   end)
 end
 
@@ -422,5 +410,5 @@ setupMenu()
 startGame()
 
 -- pd.timer.performAfterDelay(200, function()
---   popup:show(DATA['flightcontrol'], function() end)
+--   popup:show(DATA['firebase'], function() end)
 -- end)
