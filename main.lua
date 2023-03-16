@@ -21,8 +21,6 @@ if not config then
   pd.datastore.write(config)
 end
 
-DATA = json.decodeFile(pd.file.open("cards.json"))
-
 CARD_BACK = gfx.image.new("images/cards/back")
 CARD_FLIP_FRAMES = {
   gfx.image.new("images/cards/flip1"),
@@ -50,24 +48,10 @@ function startGame()
   board = { cols = 8, rows = 4, xGap = 8, yGap = -2, xMargin = 0, yMargin = 5 }
 
   -- get all data keys and randomize
-  local allKeys = {}
-  for key, data in pairs(DATA) do
-    table.insert(allKeys, #allKeys + 1, key)
-  end
-  local randomKeys = shuffle(allKeys)
-  printTable(randomKeys)
+  local ids = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }
 
-  -- keys to find card info in DATA
-  local keys = {}
-  for i, key in ipairs(randomKeys) do
-    table.insert(keys, #keys + 1, key)
-    -- we only need as many as there are cards on the board (divided by 2 since
-    -- each card is a pair)
-    if i == board.cols * board.rows / 2 then break end
-  end
-
-  -- randomized labels list, one for each card on the board
-  cardLabels = concat(shuffle(keys), shuffle(keys))
+  -- randomized card ids, one for each card on the board
+  cardIds = shuffle(concat(shuffle(ids), shuffle(ids)))
 
   -- which cards are showing
   showing = {}
@@ -136,7 +120,7 @@ function setupBoard()
   )
 
   -- sample card so we can get its size
-  local card <const> = Card('', 0, 0, 0, 0)
+  local card <const> = Card(0, 0, 0, 0, 0)
   local cards = {}
 
   -- place cards on the board
@@ -144,10 +128,9 @@ function setupBoard()
     cards[i] = {}
     for j=1,board.rows do
       local cardNumber = i + ((j - 1) * board.cols)
-      print(i, j, cardNumber)
       local spawnX = card.width * (i - 1) + (board.xGap * i) + board.xMargin
       local spawnY = card.height * (j - 1) + (board.yGap * j) + board.yMargin
-      cards[i][j] = Card(cardLabels[cardNumber], i, j, spawnX, spawnY)
+      cards[i][j] = Card(cardIds[cardNumber], i, j, spawnX, spawnY)
       cards[i][j]:add()
     end
   end
@@ -159,7 +142,7 @@ end
 -- It's responsible for moving itself around the screen when you use the d-pad
 -- or crank. What happens when you press A on a card is handled in update() below
 function setupSelector()
-  local card <const> = Card('', 0, 0, 0, 0)
+  local card <const> = Card(0, 0, 0, 0, 0)
   local options <const> = {
     cols = board.cols,
     rows = board.rows,
@@ -219,8 +202,6 @@ function handleMismatch()
 end
 
 function handleMatch(one, two)
-  scoreboard:update(one.label)
-
   pd.timer.performAfterDelay(350, function()
     play("match")
     removeMatch(one, two)
@@ -308,7 +289,7 @@ function handleA()
 
     -- are there exactly two cards visible?
     if (#showing == 2) then
-      if showing[1].label == showing[2].label then
+      if showing[1].id == showing[2].id then
         handleMatch(showing[1], showing[2])
       else
         -- not a match :(

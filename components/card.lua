@@ -3,8 +3,13 @@ local gfx <const> = pd.graphics
 
 class('Card').extends(gfx.sprite)
 
-function Card:init(label, xId, yId, xPos, yPos)
-  self.label = label
+function Card:init(id, xId, yId, xPos, yPos)
+  self.id = id
+  -- we only have 16 unique cards so if the id is 17 or greater then get us back
+  -- to a 1-16 index
+  if (id > 16) then
+    self.id = id - 16
+  end
   self.xId = xId
   self.yId = yId
   -- keep track of which side is showing and which side was showing last frame
@@ -12,8 +17,7 @@ function Card:init(label, xId, yId, xPos, yPos)
   self.side = 'back'
   self.visible = true
   self.flipAnimationFrames = 2
-
-  self.front = gfx.image.new("images/cards/"..string.lower(self.label))
+  self.front = gfx.image.new("images/cards/card"..self.id)
 
   self:setImage(CARD_BACK)
   self:setCenter(0,0)
@@ -28,6 +32,7 @@ function Card:update()
       local timer = pd.frameTimer.new(#CARD_FLIP_FRAMES + 1)
 
       timer.updateCallback = function(timer)
+        print(self.y)
         if timer.frame == 5 then
           if inverted then self:setImage(self.front) else self:setImage(CARD_BACK) end
         else
@@ -38,6 +43,7 @@ function Card:update()
       local timer = pd.frameTimer.new((#CARD_FLIP_FRAMES + 1) * self.flipAnimationFrames)
 
       timer.updateCallback = function(timer)
+        print(self.y)
         if (timer.frame % self.flipAnimationFrames == 0) then
           local step = timer.frame / self.flipAnimationFrames
 
