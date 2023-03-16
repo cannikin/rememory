@@ -1,3 +1,3 @@
-## RedwoodJS Memory
+## Rememory
 
-A Playdate game that teaches you about the partners and features of [RedwoodJS](https://redwoodjs.com).
+A Playdate memory game
