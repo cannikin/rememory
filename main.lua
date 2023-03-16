@@ -288,7 +288,7 @@ function handleA()
     end
 
     -- are there exactly two cards visible?
-    if (#showing == 2) then
+    if (#showing >= 2) then
       if showing[1].id == showing[2].id then
         handleMatch(showing[1], showing[2])
       else
@@ -304,7 +304,7 @@ function handleA()
       end
     end
 
-    play("flip")
+    print('showing cards', #showing)
   end
 end
 
@@ -389,7 +389,3 @@ end
 
 setupMenu()
 startGame()
-
--- pd.timer.performAfterDelay(200, function()
---   popup:show(DATA['firebase'], function() end)
--- end)
