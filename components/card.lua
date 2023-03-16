@@ -18,6 +18,8 @@ function Card:init(id, xId, yId, xPos, yPos)
   self.visible = true
   self.flipAnimationFrames = 2
   self.front = gfx.image.new("images/cards/card"..self.id)
+  -- tracks if cars is in the process of flipping. if so, ignore any flip() call
+  self.flipping = false
 
   self:setImage(CARD_BACK)
   self:setCenter(0,0)
@@ -32,9 +34,9 @@ function Card:update()
       local timer = pd.frameTimer.new(#CARD_FLIP_FRAMES + 1)
 
       timer.updateCallback = function(timer)
-        print(self.y)
         if timer.frame == 5 then
           if inverted then self:setImage(self.front) else self:setImage(CARD_BACK) end
+          self.flipping = false
         else
           self:setImage(CARD_FLIP_FRAMES[#CARD_FLIP_FRAMES + 1 - timer.frame])
         end
@@ -43,12 +45,12 @@ function Card:update()
       local timer = pd.frameTimer.new((#CARD_FLIP_FRAMES + 1) * self.flipAnimationFrames)
 
       timer.updateCallback = function(timer)
-        print(self.y)
         if (timer.frame % self.flipAnimationFrames == 0) then
           local step = timer.frame / self.flipAnimationFrames
 
           if step == 5 then
             if inverted then self:setImage(CARD_BACK) else self:setImage(self.front) end
+            self.flipping = false
           else
             self:setImage(CARD_FLIP_FRAMES[step])
           end
@@ -98,7 +100,10 @@ function Card:remove()
 end
 
 function Card:flip(side)
-  if (self.visible) then
+  if self.visible and not self.flipping then
+    self.flipping = true
+    play("flip")
+
     if side then
       self.side = side
     elseif self.side == 'back' then
