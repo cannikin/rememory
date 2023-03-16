@@ -18,8 +18,8 @@
     "url": "redwoodjs.com/\nbaremetal"
   },
   "clerk": {
-    "desc": "Clerk does authentication",
-    "subtitle": "Authentication",
+    "desc": "Add password, magic link, email, sms,\nsocial, and web3 logins with\njust a couple of lines of code.\nOptionally handle user profiles,\nteam onboarding and more!",
+    "subtitle": "Hosted Auth Provider",
     "title": "Clerk",
     "url": "clerk.dev"
   },
@@ -30,8 +30,8 @@
     "url": "redwoodjs.com/\ndbauth"
   },
   "firebase": {
-    "desc": "Firebase hosts your site and provides a DB...",
-    "subtitle": "Hosting Provider",
+    "desc": "If you want auth backed by one of\nthe biggest companies in the world,\nyou probably want Firebase\n (and Google). Easily add signup and\nlogin for the the big guys: Facebook,\nTwitter, GitHub, Apple, and more.",
+    "subtitle": "Hosted Auth Provider",
     "title": "Firebase",
     "url": "firebase.com"
   },
@@ -40,13 +40,6 @@
     "subtitle": "Fullstack Hosting",
     "title": "Flightcontrol",
     "url": "flightcontrol.dev"
-  },
-  "fly": {
-    "desc": "Host your app on autopilot...",
-    "icon": "fly",
-    "subtitle": "Hosting Provider",
-    "title": "Fly.io",
-    "url": "fly.io"
   },
   "graphql": {
     "desc": "Fully featured, performant and\nextendable GraphQL JS server.\nRedwood automatically creates\nresolvers from plain JS functions\nmaking your business logic\nshareable across your backend.",
@@ -62,8 +55,8 @@
     "url": "jestjs.io"
   },
   "layer0": {
-    "desc": "Layer0 provides hosting...",
-    "subtitle": "Hosting Provider",
+    "desc": "Layer0 not only hosts your static\ncontent, but provides server-side\nrendering for web appsand caches\nboth your APIs and HTML at the\nnetwork edge.",
+    "subtitle": "Build & Deploy",
     "title": "Layer0",
     "url": "layer0.co"
   },
@@ -74,16 +67,10 @@
     "url": "netlify.com"
   },
   "nhost": {
-    "desc": "Nhost provides a serverless backend...",
-    "subtitle": "Hosting Provider",
+    "desc": "Nhost is an open source alternative\nto Firebase, integrated with its\nGraphQL API and permissions from\nHasura. Includes email/password,\nmagic link, SMS, social logins, and more.",
+    "subtitle": "Hosted Auth Provider",
     "title": "Nhost",
     "url": "nhost.io"
-  },
-  "planetscale": {
-    "desc": "Host your app on autopilot...",
-    "subtitle": "Database Provider",
-    "title": "PlanetScale",
-    "url": "planetscale.com"
   },
   "prisma": {
     "desc": "Supporting SQLite, PostgreSQL\nMySQL, SQL Server, MongoDB\nand CockroachDB, this flexible\nORM also helps manage your schema\nwith versioned migrations.",
@@ -92,14 +79,14 @@
     "url": "prisma.io"
   },
   "react": {
-    "desc": "The world's most popular rendering\nengine powers Redwood's web\nfrontend. And just wait until you\nyou try Redwood's router.",
+    "desc": "The world's most popular rendering\nengine powers Redwood's web\nfrontend. And just wait until you\nyou try Redwood's router:\ninspired by Ruby on Rails and React\nRouter, it's declarative and simple. ",
     "subtitle": "Frontend Rendering",
     "title": "React",
     "url": "reactjs.org"
   },
   "render": {
-    "desc": "Lorem ipsum dolar sit amet...",
-    "subtitle": "Hosting Provider",
+    "desc": "Render is a unified cloud to build\nand run all your apps and websites\nwith TLS certificates, a global CDN,\nDDoS protection, private networks,\nand auto deploys from Git.",
+    "subtitle": "Fullstack Cloud",
     "title": "Render",
     "url": "render.com"
   },
@@ -128,7 +115,7 @@
     "url": "typescriptlang.org"
   },
   "vercel": {
-    "desc": "Lorem ipsum dolar sit amet...",
+    "desc": "A global edge networking gets your\ncode as close to the end user\nas possible. SSL, asset compression\nand cache invalidation are easy.\nPreview and collaborate on changes.",
     "subtitle": "Build & Deploy",
     "title": "Vercel",
     "url": "vercel.com"
