@@ -390,4 +390,4 @@ end
 
 setupMenu()
 startGame()
-gameOver:show(board.rows * board.cols / 2, mismatchCounter)
+--gameOver:show(board.rows * board.cols / 2, mismatchCounter)
