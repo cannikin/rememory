@@ -66,15 +66,15 @@ function startGame()
   soundMeta = {
     flip = {
       counter = 1,
-      max = 2
+      max = 1
     },
     match = {
       counter = 1,
-      max = 8
+      max = 1
     },
     mismatch = {
       counter = 1,
-      max = 7
+      max = 1
     }
   }
 
@@ -231,6 +231,7 @@ function handleGameOver()
       end
     end
   end
+
   if done then
     selector:remove()
     gameOver:show(board.rows * board.cols / 2, mismatchCounter)
@@ -389,3 +390,4 @@ end
 
 setupMenu()
 startGame()
+gameOver:show(board.rows * board.cols / 2, mismatchCounter)

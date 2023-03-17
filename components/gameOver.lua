@@ -25,11 +25,11 @@ function GameOver:init(matches, mismatches)
   }
   self.spritePositions = {
     bg = { x = 8, y = 8 },
-    title = { x = 0, y = 24 },
-    stats = { x = 0, y = 70 },
-    substats = { x = 0, y = 106 },
-    again = { x = 0, y = 136 },
-    tip = { x = 0, y = 190 }
+    title = { x = 60, y = 24 },
+    stats = { x = 60, y = 70 },
+    substats = { x = 60, y = 106 },
+    again = { x = 60, y = 136 },
+    tip = { x = 60, y = 190 }
   }
 
   -- setup sprite positions once so we don't have to worry about it again
@@ -70,17 +70,17 @@ end
 
 function GameOver:draw(matches, mismatches)
   -- background
-  local bgImage = gfx.image.new(286, 224)
+  local bgImage = gfx.image.new(340, 224)
   gfx.pushContext(bgImage)
     -- fill
     gfx.setColor(gfx.kColorWhite)
-    gfx.fillRoundRect(0, 0, 286, 224, 6)
+    gfx.fillRoundRect(45, 0, 294, 224, 6)
 
     -- stroke
     gfx.setLineWidth(3)
     gfx.setColor(gfx.kColorBlack)
     gfx.setStrokeLocation(gfx.kStrokeInside)
-    gfx.drawRoundRect(0, 0, 286, 224, 6)
+    gfx.drawRoundRect(45, 0, 294, 224, 6)
   gfx.popContext()
 
   self.sprites.bg:setImage(bgImage)
@@ -133,7 +133,7 @@ function GameOver:draw(matches, mismatches)
 
   local tipImage = gfx.image.new(286, 40)
   gfx.pushContext(tipImage)
-    self.fonts.nontendo:drawTextAligned("Did you know you can turn off\ninfo cards and sounds in the Menu?", tipImage.width/2, 0, kTextAlignment.center)
+    self.fonts.nontendo:drawTextAligned("Did you know you can turn off\nsounds in the Menu?", tipImage.width/2, 0, kTextAlignment.center)
   gfx.popContext()
   self.sprites.tip:setImage(tipImage)
 end
