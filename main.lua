@@ -304,8 +304,6 @@ function handleA()
         mismatchCounter += 1
       end
     end
-
-    print('showing cards', #showing)
   end
 end
 
